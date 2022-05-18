@@ -21,5 +21,5 @@ class TestImplVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
 
     def initTestImpl(self, obj, c):
         self.init(obj, c)
-        c.component_base = c.name() + "ComponentBase"
-        c.gtest_base = c.name() + "GTestBase"
+        c.component_base = f"{c.name()}ComponentBase"
+        c.gtest_base = f"{c.name()}GTestBase"

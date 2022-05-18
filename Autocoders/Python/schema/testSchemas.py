@@ -47,14 +47,13 @@ class schema_test:
         Ensures file exists and has the proper extension.
         """
         if not os.path.exists(file_name):
-            raise Exception("File does not exist - {}.".format(file_name))
+            raise Exception(f"File does not exist - {file_name}.")
 
-        if not file_name.upper().endswith("." + extension.upper()):
+        if not file_name.upper().endswith(f".{extension.upper()}"):
             raise Exception(
-                "File does not end with proper extension {} - {}".format(
-                    extension, file_name
-                )
+                f"File does not end with proper extension {extension} - {file_name}"
             )
+
 
         return True
 
@@ -95,17 +94,15 @@ class schema_test:
 
         if len(list_of_root_tags) == 0:
             raise Exception(
-                "{} : List of root tags empty in parse_and_add_directory!".format(
-                    self.__schema_name
-                )
+                f"{self.__schema_name} : List of root tags empty in parse_and_add_directory!"
             )
+
 
         if not os.path.isdir(directory):
             raise Exception(
-                "{} : Directory {} does not exist in parse_and_add_directory!".format(
-                    self.__schema_name, directory
-                )
+                f"{self.__schema_name} : Directory {directory} does not exist in parse_and_add_directory!"
             )
+
 
         for subdir, dirs, files in os.walk(directory):
             for file in files:
@@ -115,9 +112,7 @@ class schema_test:
                         parsed = self.__get_parsed_relaxng(new_path)
                         root_tag = parsed.getroot().tag
                         if root_tag in list_of_root_tags:
-                            self.add_test(
-                                "Path Added: " + file, new_path, None, parsed_xml=parsed
-                            )
+                            self.add_test(f"Path Added: {file}", new_path, None, parsed_xml=parsed)
                     except:
                         pass
 
@@ -167,7 +162,7 @@ class schema_test:
                         + str(test_set[2])
                         + "."
                     )
-                    print("File path - " + test_set[1])
+                    print(f"File path - {test_set[1]}")
                     print(excinfo)
                     print("\n")
                     sys.exit(1)
@@ -182,8 +177,8 @@ class schema_test:
                     + " failed validating the current file."
                 )
                 print("\n")
-                print(test_set[0] + " raised an exception but was supposed to pass.")
-                print("File path - " + test_set[1])
+                print(f"{test_set[0]} raised an exception but was supposed to pass.")
+                print(f"File path - {test_set[1]}")
 
                 print("\n")
                 raise
@@ -199,8 +194,6 @@ def setup():
     """
     Sets up and returns test_list, which is a set of schema_test objects.
     """
-    test_list = []
-
     # Create schema object
     topology_test = schema_test("Topology", "ISF/topology_schema.rng")
     component_test = schema_test("Component", "ISF/component_schema.rng")
@@ -390,22 +383,16 @@ def setup():
     serializable_test.parse_and_add_directory(["serializable"], "../test")
     topology_test.parse_and_add_directory(["deployment", "assembly"], "../test")
 
-    # Add schemas to test_list
-
-    test_list.extend(
-        (
-            topology_test,
-            component_test,
-            command_test,
-            parameter_test,
-            channel_test,
-            interface_test,
-            serializable_test,
-            event_test,
-        )
-    )
-
-    return test_list
+    return [
+        topology_test,
+        component_test,
+        command_test,
+        parameter_test,
+        channel_test,
+        interface_test,
+        serializable_test,
+        event_test,
+    ]
 
 
 def get_test_list():
@@ -413,8 +400,7 @@ def get_test_list():
     out = []
     for test_obj in test_list:
         tl = test_obj.get_test_amount()
-        for ti in range(tl):
-            out.append((test_obj.run_test, ti))
+        out.extend((test_obj.run_test, ti) for ti in range(tl))
     return out
 
 

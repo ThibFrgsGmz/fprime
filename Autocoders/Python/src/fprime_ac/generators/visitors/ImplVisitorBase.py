@@ -21,5 +21,5 @@ class ImplVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
 
     def initImpl(self, obj, c):
         self.init(obj, c)
-        c.component_base = c.name() + "ComponentBase"
-        c.impl = c.name() + "Impl"
+        c.component_base = f"{c.name()}ComponentBase"
+        c.impl = f"{c.name()}Impl"

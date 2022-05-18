@@ -133,29 +133,22 @@ class ModelParser:
         """
         Return the arg_type prefixed by <namespace>::arg_type using namespace rules.
         """
-        if comp_namespace == port_namespace:
-            return arg_type
-        # U8 * or char * pointer types
-        #        elif arg_type.split(" ")[0] in ['U8','char']:
-        #            if arg_type.split(" ")[1] =='*':
-        #                return arg_type
-        # Basic types
-        elif arg_type in (TypesList.types_list + TypesList.port_types_list):
-            return arg_type
-        elif arg_type == "Serial":
-            return arg_type
-        # Type already has specific namespace prefixed
-        elif "::" in arg_type:
+        if (
+            comp_namespace == port_namespace
+            or arg_type in (TypesList.types_list + TypesList.port_types_list)
+            or arg_type == "Serial"
+            or "::" in arg_type
+        ):
             return arg_type
         else:
-            return port_namespace + "::" + arg_type
+            return f"{port_namespace}::{arg_type}"
 
     def getPortReturnDict(self, obj):
         """
         Return a dict of return type strings, keyed by port name.
         If no return type it is 'void '.   Append modifiers to return types.
         """
-        ret_dict = dict()
+        ret_dict = {}
         for port in obj.get_ports():
             name = port.get_name()
             ret_tuple = port.get_return()
@@ -168,7 +161,7 @@ class ModelParser:
                     t = t[0][1]
                     # append namespace
                     if port.get_namespace() is not None:
-                        t = port.get_namespace() + "::" + t
+                        t = f"{port.get_namespace()}::{t}"
                 m = ret_tuple[1]
                 if m == "pointer":
                     m = "*"
@@ -176,7 +169,7 @@ class ModelParser:
                     m = "&"
                 else:
                     m = ""
-                ret_dict[name] = t + " " + m
+                ret_dict[name] = f"{t} {m}"
         return ret_dict
 
     def getPortArgsDict(self, obj):
@@ -184,12 +177,12 @@ class ModelParser:
         Return a dict of list of args, keyed by port name
         (e.g. arg_dict['Port name'] => [(name,type,comment), (name,type,comment), ...]
         """
-        args_dict = dict()
+        args_dict = {}
         comp_namespace = obj.get_namespace()
         for port in obj.get_ports():
             name = port.get_name()
             port_namespace = port.get_namespace()
-            args_dict[name] = list()
+            args_dict[name] = []
             # print "Port: %s" % name
             args = port.get_args()
             for a in args:
@@ -214,10 +207,10 @@ class ModelParser:
                     m = "&"
 
                 if t == "string":
-                    t = n + "String"
+                    t = f"{n}String"
 
                 if t == "buffer":
-                    t = n + "Buffer"
+                    t = f"{n}Buffer"
                 #
                 # Check and get enum type here...
                 if isinstance(t, tuple):
@@ -239,7 +232,7 @@ class ModelParser:
                 # print "Name %s : Type %s" % (n,t)
                 non_const_arg_type = t
                 if isConstReference:
-                    t = "const " + t
+                    t = f"const {t}"
                 args_dict[name].append((n, t, c, m, e, non_const_arg_type))
         return args_dict
 
@@ -249,13 +242,12 @@ class ModelParser:
         (.e.g. arg_dict['Port name'] => "type1 name1, type2, name2 ..."
         """
         d = self.getPortArgsDict(obj)
-        d2 = dict()
-        for l in d:
-            if len(d[l]) > 0:
-                d2[l] = ", ".join(["{} {}{}".format(x[1], x[3], x[0]) for x in d[l]])
-            else:
-                d2[l] = "void"
-        return d2
+        return {
+            l: ", ".join([f"{x[1]} {x[3]}{x[0]}" for x in d[l]])
+            if len(d[l]) > 0
+            else "void"
+            for l in d
+        }
 
     def getPortArgsCallStringDict(self, obj):
         """
@@ -263,20 +255,17 @@ class ModelParser:
         (.e.g. arg_dict['Port name'] => "name1, name2 ..."
         """
         d = self.getPortArgsDict(obj)
-        d2 = dict()
-        for l in d:
-            if len(d[l]) > 0:
-                d2[l] = ", ".join(["%s" % x[0] for x in d[l]])
-            else:
-                d2[l] = ""
-        return d2
+        return {
+            l: ", ".join([f"{x[0]}" for x in d[l]]) if len(d[l]) > 0 else ""
+            for l in d
+        }
 
     def getMsgTypeArgsDict(self, obj, msg_types_list):
         """
         Return a dict of list of args, keyed by port type name (in all CAPS)
         (e.g. msg_type_arg_dict['Msg type name'] => [(name,type,comment),(name,type,comment),...]
         """
-        msg_type_arg_dict = dict()
+        msg_type_arg_dict = {}
         port_instance_name_list = self.getPortsList(obj)
         args_dict = self.getPortArgsDict(obj)
         #
@@ -291,12 +280,10 @@ class ModelParser:
         Return a dict of port namespace, keyed on port type.
         """
         # Build list of unique port types here...
-        port_types = []
-        for p in obj.get_ports():
-            port_types.append(p.get_type())
+        port_types = [p.get_type() for p in obj.get_ports()]
         port_types = self.uniqueList(port_types)
         # Build a dictionary of namespaces keyed on port type here...
-        port_namespace_dict = dict()
+        port_namespace_dict = {}
         for p in port_types:
             for p2 in obj.get_ports():
                 if p == p2.get_type():
@@ -365,14 +352,8 @@ class ModelParser:
                     mem_list = t[1]
                     member_lines = []
                     for member in mem_list:
-                        if member[1] is not None:
-                            mem_init = " = %s" % member[1]
-                        else:
-                            mem_init = ""
-                        if member[2] is not None:
-                            mem_comment = " //<! %s" % member[2]
-                        else:
-                            mem_comment = ""
+                        mem_init = f" = {member[1]}" if member[1] is not None else ""
+                        mem_comment = f" //<! {member[2]}" if member[2] is not None else ""
                         member_lines.append((member[0], mem_init, mem_comment))
                     enum_list.append((enum_type, member_lines))
                 else:
@@ -415,14 +396,8 @@ class ModelParser:
                     mem_list = t[1]
                     member_lines = []
                     for member in mem_list:
-                        if member[1] is not None:
-                            mem_init = " = %s" % member[1]
-                        else:
-                            mem_init = ""
-                        if member[2] is not None:
-                            mem_comment = " //<! %s" % member[2]
-                        else:
-                            mem_comment = ""
+                        mem_init = f" = {member[1]}" if member[1] is not None else ""
+                        mem_comment = f" //<! {member[2]}" if member[2] is not None else ""
                         member_lines.append((member[0], mem_init, mem_comment))
                     enum_list.append((enum_type, member_lines))
                 else:
@@ -469,14 +444,8 @@ class ModelParser:
                         mem_list = t[1]
                         member_lines = []
                         for member in mem_list:
-                            if member[1] is not None:
-                                mem_init = " = %s" % member[1]
-                            else:
-                                mem_init = ""
-                            if member[2] is not None:
-                                mem_comment = " //<! %s" % member[2]
-                            else:
-                                mem_comment = ""
+                            mem_init = f" = {member[1]}" if member[1] is not None else ""
+                            mem_comment = f" //<! {member[2]}" if member[2] is not None else ""
                             member_lines.append((member[0], mem_init, mem_comment))
                         enum_list.append((enum_type, member_lines))
                     else:
@@ -489,10 +458,10 @@ class ModelParser:
         Return a dict of list of args, keyed by command mnemonic
         (e.g. arg_dict['mnemonic'] => [(name,type,comment), (name,type,comment), ...]
         """
-        args_dict = dict()
+        args_dict = {}
         for command in obj.get_commands():
             mnemonic = command.get_mnemonic()
-            args_dict[mnemonic] = list()
+            args_dict[mnemonic] = []
             # print "Command: %s" % name
             args = command.get_args()
 
@@ -510,10 +479,7 @@ class ModelParser:
                         print("ERROR: Expected ENUM type in command args list...")
                         sys.exit(-1)
                 elif t == "string":
-                    if from_proto:
-                        t = "const Fw::CmdStringArg&"
-                    else:
-                        t = "Fw::CmdStringArg"
+                    t = "const Fw::CmdStringArg&" if from_proto else "Fw::CmdStringArg"
                     typeinfo = "string"
                 c = a.get_comment()
                 # Add namespace to type here...
@@ -533,13 +499,12 @@ class ModelParser:
         (.e.g. arg_dict['mnemonic'] => "type1 name1, type2, name2 ..."
         """
         d = self.getCommandArgsDict(obj, True)
-        d2 = dict()
-        for l in d:
-            if len(d[l]) > 0:
-                d2[l] = ", ".join(["{} {}".format(x[1], x[0]) for x in d[l]])
-            else:
-                d2[l] = "void"
-        return d2
+        return {
+            l: ", ".join([f"{x[1]} {x[0]}" for x in d[l]])
+            if len(d[l]) > 0
+            else "void"
+            for l in d
+        }
 
     def getEventEnumList(self, obj):
         enum_list = []
@@ -555,14 +520,8 @@ class ModelParser:
                         mem_list = t[1]
                         member_lines = []
                         for member in mem_list:
-                            if member[1] is not None:
-                                mem_init = " = %s" % member[1]
-                            else:
-                                mem_init = ""
-                            if member[2] is not None:
-                                mem_comment = " //<! %s" % member[2]
-                            else:
-                                mem_comment = ""
+                            mem_init = f" = {member[1]}" if member[1] is not None else ""
+                            mem_comment = f" //<! {member[2]}" if member[2] is not None else ""
                             member_lines.append((member[0], mem_init, mem_comment))
                         enum_list.append((enum_type, member_lines))
                     else:
@@ -575,10 +534,10 @@ class ModelParser:
         Return a dict of list of args, keyed by name mnemonic
         (e.g. arg_dict['name'] => [(name,type,comment), (name,type,comment), ...]
         """
-        args_dict = dict()
+        args_dict = {}
         for event in obj.get_events():
             name = event.get_name()
-            args_dict[name] = list()
+            args_dict[name] = []
             # print "Command: %s" % name
             args = event.get_args()
 
@@ -619,14 +578,10 @@ class ModelParser:
         (.e.g. arg_dict['mnemonic'] => "type1 name1, type2, name2 ..."
         """
         d = self.getEventArgsDict(obj)
-        d2 = dict()
-        for l in d:
-            if len(d[l]) > 0:
-                d2[l] = ", ".join(["{} {}".format(x[1], x[0]) for x in d[l]])
-            else:
-                # If event has no arguments parameter string should be empty
-                d2[l] = ""
-        return d2
+        return {
+            l: ", ".join([f"{x[1]} {x[0]}" for x in d[l]]) if len(d[l]) > 0 else ""
+            for l in d
+        }
 
     def getInternalInterfacesList(self, obj):
         """
@@ -646,23 +601,22 @@ class ModelParser:
         (.e.g. arg_dict['name'] => "type1 name1, type2, name2 ..."
         """
         d = self.getInternalInterfaceArgsDict(obj, True)
-        d2 = dict()
-        for l in d:
-            if len(d[l]) > 0:
-                d2[l] = ", ".join(["{} {}".format(x[1], x[0]) for x in d[l]])
-            else:
-                d2[l] = "void"
-        return d2
+        return {
+            l: ", ".join([f"{x[1]} {x[0]}" for x in d[l]])
+            if len(d[l]) > 0
+            else "void"
+            for l in d
+        }
 
     def getInternalInterfaceArgsDict(self, obj, from_proto=False):
         """
         Return a dict of list of args, keyed by internal interface name
         (e.g. arg_dict['name'] => [(name,type,comment), (name,type,comment), ...]
         """
-        args_dict = dict()
+        args_dict = {}
         for internal_interface in obj.get_internal_interfaces():
             name = internal_interface.get_name()
-            args_dict[name] = list()
+            args_dict[name] = []
             # print "Interface: %s" % name
             args = internal_interface.get_args()
 
@@ -687,11 +641,9 @@ class ModelParser:
                     else:
                         t = "Fw::InternalInterfaceString"
                     typeinfo = "string"
-                elif t in TypesList.types_list + TypesList.port_types_list:
-                    pass
-                else:
+                elif t not in TypesList.types_list + TypesList.port_types_list:
                     if from_proto:
-                        t = "const %s&" % t
+                        t = f"const {t}&"
                     typeinfo = "user"
                 c = a.get_comment()
                 args_dict[name].append((n, t, c, typeinfo))
@@ -711,14 +663,8 @@ class ModelParser:
                         mem_list = t[1]
                         member_lines = []
                         for member in mem_list:
-                            if member[1] is not None:
-                                mem_init = " = %s" % member[1]
-                            else:
-                                mem_init = ""
-                            if member[2] is not None:
-                                mem_comment = " //<! %s" % member[2]
-                            else:
-                                mem_comment = ""
+                            mem_init = f" = {member[1]}" if member[1] is not None else ""
+                            mem_comment = f" //<! {member[2]}" if member[2] is not None else ""
                             member_lines.append((member[0], mem_init, mem_comment))
                         enum_list.append((enum_type, member_lines))
                     else:
@@ -727,8 +673,4 @@ class ModelParser:
         return enum_list
 
 
-if __name__ == "__main__":
-    #
-    # Quick tests.
-    #
-    pass
+pass

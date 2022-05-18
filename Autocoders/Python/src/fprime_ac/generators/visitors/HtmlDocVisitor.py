@@ -47,7 +47,7 @@ class HtmlDocVisitor(ComponentVisitorBase.ComponentVisitorBase):
         output_dir = os.environ["HTML_DOC_SUBDIR"]
         if not (os.path.isdir(output_dir)):
             os.makedirs(output_dir)
-        htmlfile = output_dir + "/" + obj.get_name() + ".html"
+        htmlfile = f"{output_dir}/{obj.get_name()}.html"
         self.openFile(htmlfile)
 
     def htmlPageVisit(self, obj):

@@ -20,7 +20,7 @@ class GTestWriterBase(ComponentWriterBase.ComponentWriterBase):
     """
 
     def transformEnumType(self, c, type, typeinfo):
-        return c.component_base + "::" + type if typeinfo == "enum" else type
+        return f"{c.component_base}::{type}" if typeinfo == "enum" else type
 
     def getTlmType(self, c):
         def f(type, typeinfo):
@@ -33,12 +33,12 @@ class GTestWriterBase(ComponentWriterBase.ComponentWriterBase):
     def transformEventParams(self, c, params):
         def transformEventParam(param):
             name, type, comment, size, typeinfo = param
-            if typeinfo == "string":
+            if typeinfo == "enum":
+                return name, f"{c.component_base}::{type}", comment, typeinfo
+            elif typeinfo == "string":
                 return (name, "const char *const", comment, typeinfo)
-            elif typeinfo == "enum":
-                return (name, c.component_base + "::" + type, comment, typeinfo)
             else:
-                return (name, "const " + type, comment, typeinfo)
+                return name, f"const {type}", comment, typeinfo
 
         return list(map(transformEventParam, params))
 
@@ -55,15 +55,15 @@ class GTestWriterBase(ComponentWriterBase.ComponentWriterBase):
                 type = "const char *const"
             else:
                 type = self.transformEnumType(c, type, typeinfo)
-                type = "const " + type + "&"
+                type = f"const {type}&"
             return ("val", type, "The channel value")
 
         return f
 
     def initGTest(self, obj, c):
         self.init(obj, c)
-        c.gtest_base = c.name() + "GTestBase"
-        c.tester_base = c.name() + "TesterBase"
+        c.gtest_base = f"{c.name()}GTestBase"
+        c.tester_base = f"{c.name()}TesterBase"
         c.get_event_params = self.getEventParams(c)
         c.get_param_val_Tlm = self.getParamValTlm(c)
         c.param_maxHistorySize = (

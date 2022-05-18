@@ -63,7 +63,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("ComponentWriterBase:%s" % write_str)
+        DEBUG.debug(f"ComponentWriterBase:{write_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -78,7 +78,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         else:
             result = args[0]
             for arg in args[1:]:
-                result += ", %s" % arg
+                result += f", {arg}"
         return result
 
     def buildFileName(self, obj):
@@ -92,9 +92,9 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
                 + self.config("component", self.__writer)
             )
             DEBUG.info(
-                "Generating code filename: %s, using XML namespace and name attributes..."
-                % filename
+                f"Generating code filename: {filename}, using XML namespace and name attributes..."
             )
+
         else:
             xml_file = obj.get_xml_filename()
             x = xml_file.split(".")
@@ -102,12 +102,10 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
             l = len(s[0])
             if (x[0][-l:] == s[0]) & (x[1] == s[1]):
                 filename = x[0].split(s[0])[0] + self.config("component", self.__writer)
-                DEBUG.info("Generating code filename: %s..." % filename)
+                DEBUG.info(f"Generating code filename: {filename}...")
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXComponentAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXComponentAi.xml), Filename: {xml_file}"
+
                 PRINT.info(msg)
                 raise ValueError(msg)
         return filename
@@ -133,34 +131,22 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         """
         Emit a doxygen post comment
         """
-        if comment is None or comment == "":
-            return ""
-        else:
-            return "/*!< " + comment + "*/"
+        return "" if comment is None or comment == "" else f"/*!< {comment}*/"
 
     def doxygenPreComment(self, comment):
         """
         Emit a doxygen pre comment
         """
-        if comment is None or comment == "":
-            return ""
-        else:
-            return "/*! " + comment + "*/"
+        return "" if comment is None or comment == "" else f"/*! {comment}*/"
 
     def emitComment(self, comment):
         """
         Emit a comment
         """
-        if comment is None or comment == "":
-            return ""
-        else:
-            return "/* " + comment + "*/"
+        return "" if comment is None or comment == "" else f"/* {comment}*/"
 
     def emitIndent(self, indent):
-        str = ""
-        for i in range(0, indent):
-            str += " "
-        return str
+        return "".join(" " for _ in range(indent))
 
     def emitNonPortParamsCpp(self, indent, params):
         """
@@ -191,13 +177,14 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         """
         length = len(params)
         if length == 0:
-            return self.emitIndent(indent) + "void"
-        else:
-            str = ""
-            for i in range(0, length - 1):
-                str += self.emitParam(NOT_LAST, indent, paramStrs, params[i])
-            str += self.emitParam(LAST, indent, paramStrs, params[length - 1])
-            return str
+            return f"{self.emitIndent(indent)}void"
+        str = "".join(
+            self.emitParam(NOT_LAST, indent, paramStrs, params[i])
+            for i in range(length - 1)
+        )
+
+        str += self.emitParam(LAST, indent, paramStrs, params[length - 1])
+        return str
 
     def emitPortParamsCpp(self, indent, params):
         """
@@ -218,8 +205,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
 
         def f(args):
             def g(lst):
-                name = lst[0]
-                return name
+                return lst[0]
 
             return self.argsString(list(map(g, args)))
 
@@ -381,7 +367,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         def f(xxx_todo_changeme2):
             (instance, type, direction, sync, priority, role) = xxx_todo_changeme2
             if self.isInput(direction) and self.isAsync(sync):
-                return instance.upper() + "_" + type.upper()
+                return f"{instance.upper()}_{type.upper()}"
             else:
                 return None
 
@@ -391,14 +377,13 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
             (mnemonic, opcodes, sync, priority, full, comment) = xxx_todo_changeme3
             if self.isAsync(sync):
                 if len(opcodes) == 1:
-                    return "CMD_" + mnemonic.upper()
+                    return f"CMD_{mnemonic.upper()}"
                 else:
-                    mlist = list()
-                    inst = 0
-                    for opcode in opcodes:
-                        mlist.append("CMD_" + mnemonic.upper() + "_%d" % inst)
-                        inst += 1
-                    return mlist
+                    return [
+                        f"CMD_{mnemonic.upper()}" + "_%d" % inst
+                        for inst, opcode in enumerate(opcodes)
+                    ]
+
             else:
                 return None
 
@@ -406,7 +391,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
 
         def h(xxx_todo_changeme4):
             (name, priority, full) = xxx_todo_changeme4
-            return "INT_IF_" + name.upper()
+            return f"INT_IF_{name.upper()}"
 
         self.__model_parser.getInternalInterfacesList(obj)
         interface_types = self.mapPartial(h, c.internal_interfaces)
@@ -452,7 +437,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         c.has_time_get = "TimeGet" in roles
 
     def initPortIncludes(self, obj, c):
-        c.port_includes = list()
+        c.port_includes = []
         for include in self.__model_parser.uniqueList(obj.get_xml_port_files()):
             include = include.replace("PortAi.xml", "PortAc.hpp")
             include = include.replace("/test/ut", "")
@@ -711,21 +696,21 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         for name, type, direction, role in c.ports:
             if role == "Cmd":
                 c.Cmd_Name = name
-            if role == "CmdRegistration":
+            elif role == "CmdRegistration":
                 c.CmdReg_Name = name
-            if role == "CmdResponse":
+            elif role == "CmdResponse":
                 c.CmdStatus_Name = name
-            if role == "LogEvent":
+            elif role == "LogEvent":
                 c.LogEvent_Name = name
-            if role == "LogTextEvent":
+            elif role == "LogTextEvent":
                 c.LogTextEvent_Name = name
-            if role == "ParamGet":
+            elif role == "ParamGet":
                 c.ParamGet_Name = name
-            if role == "ParamSet":
+            elif role == "ParamSet":
                 c.ParamSet_Name = name
-            if role == "Telemetry":
+            elif role == "Telemetry":
                 c.Tlm_Name = name
-            if role == "TimeGet":
+            elif role == "TimeGet":
                 c.Time_Name = name
 
     def initPortParams(self, obj, c):
@@ -765,7 +750,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         c.kind = obj.get_kind()
         c.modeler = obj.get_modeler()
         c.name = obj.get_name
-        c.component_base = c.name() + "ComponentBase"
+        c.component_base = f"{c.name()}ComponentBase"
         if obj.get_namespace() is None:
             c.namespace_list = None
         else:
@@ -858,10 +843,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
             y = f(x)
             if y is not None:
                 # check if list
-                if isinstance(y, list):
-                    result += y
-                else:
-                    result += [y]
+                result += y if isinstance(y, list) else [y]
         return result
 
     def namespaceWrite(self, obj):
@@ -871,7 +853,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         """
         Open the file for writing
         """
-        DEBUG.info("Open file: %s" % filename)
+        DEBUG.info(f"Open file: {filename}")
         self.__fp = open(filename, "w")
         if self.__fp is None:
             raise Exception("Could not open file %s") % filename
@@ -886,7 +868,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         Get the strings for a function parameter in a .cpp file
         """
         name, type = param[:2]
-        param_str = "{} {}".format(type, name)
+        param_str = f"{type} {name}"
         return param_str, ""
 
     def paramStrsHpp(self, param):
@@ -894,8 +876,8 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         Get the strings for a function parameter in a .hpp file
         """
         name, type, comment = param[:3]
-        param_str = "{} {}".format(type, name)
-        comment_str = " " + self.doxygenPostComment(comment)
+        param_str = f"{type} {name}"
+        comment_str = f" {self.doxygenPostComment(comment)}"
         return param_str, comment_str
 
     def portParamStrsCpp(self, param):
@@ -903,7 +885,7 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         Get the strings for a port function parameter in a .cpp file
         """
         name, type, comment, modifier = param[:4]
-        param_str = "{} {}{}".format(type, modifier, name)
+        param_str = f"{type} {modifier}{name}"
         return param_str, ""
 
     def portParamStrsHpp(self, param):
@@ -911,8 +893,8 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
         Get the strings for a port function parameter in a .hpp file
         """
         name, type, comment, modifier = param[:4]
-        param_str = "{} {}{}".format(type, modifier, name)
-        comment_str = " " + self.doxygenPostComment(comment)
+        param_str = f"{type} {modifier}{name}"
+        comment_str = f" {self.doxygenPostComment(comment)}"
         return param_str, comment_str
 
     def privateWrite(self, obj):
@@ -933,9 +915,9 @@ class ComponentWriterBase(AbstractWriter.AbstractWriter):
             relative_path = build_root_relative_path(path)
         except BuildRootMissingException as bre:
             PRINT.info(
-                "ERROR: BUILD_ROOT and current execution path (%s) not consistent! %s"
-                % (path, str(bre))
+                f"ERROR: BUILD_ROOT and current execution path ({path}) not consistent! {str(bre)}"
             )
+
             sys.exit(-1)
         DEBUG.debug("Relative path: %s", relative_path)
         return relative_path

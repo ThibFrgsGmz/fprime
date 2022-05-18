@@ -76,7 +76,7 @@ class InstanceChannelVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("ChannelVisitor:%s" % visit_str)
+        DEBUG.debug(f"ChannelVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -112,22 +112,20 @@ class InstanceChannelVisitor(AbstractVisitor.AbstractVisitor):
 
         for instance_obj in instance_obj_list:
             if instance_obj[3].get_dict_short_name() is not None:
-                fname = "{}_{}".format(
-                    instance_obj[3].get_dict_short_name(), obj.get_name()
-                )
+                fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_name()}"
             elif (
                 not topology_model.get_prepend_instance_name()
                 and len(instance_obj_list) == 1
             ):
                 fname = obj.get_name()
             else:
-                fname = "{}_{}".format(instance_obj[0], obj.get_name())
-            pyfile = "{}/{}.py".format(output_dir, fname)
-            DEBUG.info("Open file: {}".format(pyfile))
+                fname = f"{instance_obj[0]}_{obj.get_name()}"
+            pyfile = f"{output_dir}/{fname}.py"
+            DEBUG.info(f"Open file: {pyfile}")
             fd = open(pyfile, "w")
             if fd is None:
-                raise Exception("Could not open {} file.".format(pyfile))
-            DEBUG.info("Completed {} open".format(pyfile))
+                raise Exception(f"Could not open {pyfile} file.")
+            DEBUG.info(f"Completed {pyfile} open")
             self.__fp[fname] = fd
 
     def DictHeaderVisit(self, obj, topology_model):
@@ -163,24 +161,21 @@ class InstanceChannelVisitor(AbstractVisitor.AbstractVisitor):
         for instance_obj in instance_obj_list:
             c = ChannelBody.ChannelBody()
             if instance_obj[3].get_dict_short_name() is not None:
-                fname = "{}_{}".format(
-                    instance_obj[3].get_dict_short_name(), obj.get_name()
-                )
+                fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_name()}"
             elif (
                 not topology_model.get_prepend_instance_name()
                 and len(instance_obj_list) == 1
             ):
                 fname = obj.get_name()
             else:
-                fname = "{}_{}".format(instance_obj[0], obj.get_name())
+                fname = f"{instance_obj[0]}_{obj.get_name()}"
             c.name = fname
 
             if len(obj.get_ids()) > 1:
                 raise Exception(
-                    "There is more than one event id when creating dictionaries. Check xml of {} or see if multiple explicit IDs exist in the AcConstants.ini file".format(
-                        fname
-                    )
+                    f"There is more than one event id when creating dictionaries. Check xml of {fname} or see if multiple explicit IDs exist in the AcConstants.ini file"
                 )
+
             try:
                 c.id = hex(instance_obj[1] + int(float(obj.get_ids()[0])))
             except (ValueError, TypeError):

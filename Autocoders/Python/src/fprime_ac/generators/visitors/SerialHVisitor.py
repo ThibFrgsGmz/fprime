@@ -100,19 +100,19 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
             default,
         ) in obj.get_members():
             if isinstance(mtype, tuple):
-                arg_str += "{} {}, ".format(mtype[0][1], name)
+                arg_str += f"{mtype[0][1]} {name}, "
             elif mtype == "string" and array_size is None:
-                arg_str += "const {}::{}String& {}, ".format(obj.get_name(), name, name)
-            elif mtype == "string" and array_size is not None:
-                arg_str += "const {}::{}String* {}, ".format(obj.get_name(), name, name)
-                arg_str += "NATIVE_INT_TYPE %sSize, " % (name)
+                arg_str += f"const {obj.get_name()}::{name}String& {name}, "
+            elif mtype == "string":
+                arg_str += f"const {obj.get_name()}::{name}String* {name}, "
+                arg_str += f"NATIVE_INT_TYPE {name}Size, "
             elif mtype not in typelist:
-                arg_str += "const {}& {}, ".format(mtype, name)
+                arg_str += f"const {mtype}& {name}, "
             elif array_size is not None:
-                arg_str += "const {}* {}, ".format(mtype, name)
-                arg_str += "NATIVE_INT_TYPE %sSize, " % (name)
+                arg_str += f"const {mtype}* {name}, "
+                arg_str += f"NATIVE_INT_TYPE {name}Size, "
             else:
-                arg_str += "{} {}".format(mtype, name)
+                arg_str += f"{mtype} {name}"
                 arg_str += ", "
 
         arg_str = arg_str.strip(", ")
@@ -137,16 +137,16 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
             default,
         ) in obj.get_members():
             if isinstance(mtype, tuple):
-                arg_str += "{} {}, ".format(mtype[0][1], name)
+                arg_str += f"{mtype[0][1]} {name}, "
             elif mtype == "string":
-                arg_str += "const {}::{}String& {}, ".format(obj.get_name(), name, name)
+                arg_str += f"const {obj.get_name()}::{name}String& {name}, "
             elif mtype not in typelist:
-                arg_str += "const {}& {}, ".format(mtype, name)
+                arg_str += f"const {mtype}& {name}, "
             elif array_size is not None:
-                arg_str += "const {} {}, ".format(mtype, name)
+                arg_str += f"const {mtype} {name}, "
                 contains_array = True
             else:
-                arg_str += "{} {}".format(mtype, name)
+                arg_str += f"{mtype} {name}"
                 arg_str += ", "
         if not contains_array:
             return None
@@ -157,7 +157,7 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
         """
         Return a list of port argument tuples
         """
-        arg_list = list()
+        arg_list = []
 
         for (
             name,
@@ -173,7 +173,7 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
                 mtype = mtype[0][1]
                 typeinfo = "enum"
             elif mtype == "string":
-                mtype = "{}::{}String".format(obj.get_name(), name)
+                mtype = f"{obj.get_name()}::{name}String"
                 typeinfo = "string"
             elif mtype not in typelist:
                 typeinfo = "extern"
@@ -189,18 +189,13 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
         for e in enum_list:
             # No value, No comment
             if (e[1] is None) and (e[2] is None):
-                s = "%s," % (e[0])
-            # No value, With comment
-            elif (e[1] is None) and (e[2] is not None):
-                s = "{},  // {}".format(e[0], e[2])
-            # With value, No comment
-            elif (e[1] is not None) and (e[2] is None):
-                s = "{} = {},".format(e[0], e[1])
-            # With value and comment
-            elif (e[1] is not None) and (e[2] is not None):
-                s = "%s = %s,  // %s" % (e)
+                s = f"{e[0]},"
+            elif e[1] is None:
+                s = f"{e[0]},  // {e[2]}"
+            elif e[2] is None:
+                s = f"{e[0]} = {e[1]},"
             else:
-                pass
+                s = "%s = %s,  // %s" % (e)
             enum_str_list.append(s)
 
         return (enum_tuple, enum_str_list)
@@ -209,7 +204,7 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("SerialHVisitor:%s" % visit_str)
+        DEBUG.debug(f"SerialHVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -229,9 +224,9 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
                 + self.__config.get("serialize", "SerializableH")
             )
             PRINT.info(
-                "Generating code filename: %s, using XML namespace and name attributes..."
-                % filename
+                f"Generating code filename: {filename}, using XML namespace and name attributes..."
             )
+
         else:
             xml_file = obj.get_xml_filename()
             x = xml_file.split(".")
@@ -243,19 +238,17 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
                     "serialize", "SerializableH"
                 )
                 PRINT.info(
-                    "Generating code filename: %s, using default XML filename prefix..."
-                    % filename
+                    f"Generating code filename: {filename}, using default XML filename prefix..."
                 )
+
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXSerializableAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXSerializableAi.xml), Filename: {xml_file}"
+
                 PRINT.info(msg)
                 sys.exit(-1)
 
         # Open file for writing here...
-        DEBUG.info("Open file: %s" % filename)
+        DEBUG.info(f"Open file: {filename}")
         self.__fp = open(filename, "w")
         if self.__fp is None:
             raise Exception("Could not open %s file.") % filename
@@ -321,9 +314,7 @@ class SerialHVisitor(AbstractVisitor.AbstractVisitor):
         c.enum_type_list = []
         t = [x[1] for x in obj.get_members()]
         enum_list = [x for x in t if type(x) == tuple]
-        for e in enum_list:
-            c.enum_type_list.append(self._get_enum_string_list(e))
-
+        c.enum_type_list.extend(self._get_enum_string_list(e) for e in enum_list)
         c.mem_list = obj.get_members()
 
         c.name = obj.get_name()

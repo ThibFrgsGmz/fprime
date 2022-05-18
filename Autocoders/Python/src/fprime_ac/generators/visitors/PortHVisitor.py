@@ -100,31 +100,31 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
                     isEnum = True
                 else:
                     PRINT.info(
-                        "ERROR: Ill formed enumeration type...(name: %s, type: %s"
-                        % (arg.get_name(), arg.get_type())
+                        f"ERROR: Ill formed enumeration type...(name: {arg.get_name()}, type: {arg.get_type()}"
                     )
+
                     sys.exit(-1)
             else:
                 t = arg.get_type()
 
             if t == "string":
-                t = arg.get_name() + "String"
+                t = f"{arg.get_name()}String"
             if t == "buffer":
-                t = arg.get_name() + "Buffer"
+                t = f"{arg.get_name()}Buffer"
             #
             # Add modifier here - if any...
             if arg.get_modifier() == "pointer":
-                t = t + " *"
+                t = f"{t} *"
             elif arg.get_modifier() == "reference":
-                t = t + " &"
+                t = f"{t} &"
             elif arg.get_modifier() == "value":
-                t = t + " "
+                t = f"{t} "
             elif TypesList.isPrimitiveType(t) or isEnum:
-                t = t + " "
+                t = f"{t} "
             else:
-                t = "const " + t + " &"
+                t = f"const {t} &"
 
-            arg_str += "{}{}".format(t, arg.get_name())
+            arg_str += f"{t}{arg.get_name()}"
             arg_str += ", "
         arg_str = arg_str.strip(", ")
         return arg_str
@@ -144,25 +144,22 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
             t = arg.get_type()
 
             if t == "string":
-                t = arg.get_name() + "String"
+                t = f"{arg.get_name()}String"
             if t == "buffer":
-                t = arg.get_name() + "Buffer"
+                t = f"{arg.get_name()}Buffer"
 
             #
             # Make size for pointer modifier here...
-            if arg.get_modifier() == "pointer":
-                cl = " *)"
-            else:
-                cl = ")"
+            cl = " *)" if arg.get_modifier() == "pointer" else ")"
             #
             if isinstance(t, tuple):
                 if t[0][0].upper() == "ENUM":
                     t = "sizeof(NATIVE_INT_TYPE)"
                 else:
                     PRINT.info(
-                        "ERROR: Ill formed enumeration type...(name: %s, type: %s"
-                        % (arg.get_name(), arg.get_type())
+                        f"ERROR: Ill formed enumeration type...(name: {arg.get_name()}, type: {arg.get_type()}"
                     )
+
                     sys.exit(-1)
             elif t in [
                 "U8",
@@ -184,12 +181,11 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
                 "NATIVE_UINT_TYPE",
                 "POINTER_CAST",
             ]:
-                t = "sizeof(" + t + cl
+                t = f"sizeof({t}{cl}"
+            elif arg.get_modifier() == "pointer":
+                t = f"sizeof({t}*)"
             else:
-                if arg.get_modifier() == "pointer":
-                    t = "sizeof(" + t + "*)"
-                else:
-                    t = t + "::SERIALIZED_SIZE"
+                t = f"{t}::SERIALIZED_SIZE"
             arg_str += t
             arg_str += " + "
         arg_str = arg_str.strip(" + ")
@@ -199,7 +195,7 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
         """
         Return a list of port argument tuples
         """
-        arg_list = list()
+        arg_list = []
 
         for arg in obj.get_args():
             n = arg.get_name()
@@ -215,7 +211,7 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("PortHVisitor:%s" % visit_str)
+        DEBUG.debug(f"PortHVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -230,9 +226,9 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
         if self.__config.get("port", "XMLDefaultFileName") == "True":
             filename = obj.get_type() + self.__config.get("port", "PortH")
             PRINT.info(
-                "Generating code filename: %s, using XML namespace and name attributes..."
-                % filename
+                f"Generating code filename: {filename}, using XML namespace and name attributes..."
             )
+
         else:
             xml_file = obj.get_xml_filename()
             x = xml_file.split(".")
@@ -242,19 +238,17 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
             if (x[0][-l:] == s[0]) & (x[1] == s[1]):
                 filename = x[0].split(s[0])[0] + self.__config.get("port", "PortH")
                 PRINT.info(
-                    "Generating code filename: %s, using default XML filename prefix..."
-                    % filename
+                    f"Generating code filename: {filename}, using default XML filename prefix..."
                 )
+
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXPortAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXPortAi.xml), Filename: {xml_file}"
+
                 PRINT.info(msg)
                 raise ValueError(msg)
 
         # Open file for writing here...
-        DEBUG.info("Open file: %s" % filename)
+        DEBUG.info(f"Open file: {filename}")
         self.__fp = open(filename, "w")
         if self.__fp is None:
             raise Exception("Could not open %s file.") % filename
@@ -313,18 +307,13 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
         for e in enum_list:
             # No value, No comment
             if (e[1] is None) and (e[2] is None):
-                s = "%s," % (e[0])
-            # No value, With comment
-            elif (e[1] is None) and (e[2] is not None):
-                s = "{},  // {}".format(e[0], e[2])
-            # With value, No comment
-            elif (e[1] is not None) and (e[2] is None):
-                s = "{} = {},".format(e[0], e[1])
-            # With value and comment
-            elif (e[1] is not None) and (e[2] is not None):
-                s = "%s = %s,  // %s" % (e)
+                s = f"{e[0]},"
+            elif e[1] is None:
+                s = f"{e[0]},  // {e[2]}"
+            elif e[2] is None:
+                s = f"{e[0]} = {e[1]},"
             else:
-                pass
+                s = "%s = %s,  // %s" % (e)
             enum_str_list.append(s)
 
         return (enum_tuple, enum_str_list)
@@ -354,8 +343,7 @@ class PortHVisitor(AbstractVisitor.AbstractVisitor):
         if r is not None:
             t += obj.get_return()
         enum_list = [x for x in t if type(x) == tuple]
-        for e in enum_list:
-            c.enum_type_list.append(self._get_enum_string_list(e))
+        c.enum_type_list.extend(self._get_enum_string_list(e) for e in enum_list)
         # print c.enum_type_list
 
         c.arg_list = self._get_args_list(obj)

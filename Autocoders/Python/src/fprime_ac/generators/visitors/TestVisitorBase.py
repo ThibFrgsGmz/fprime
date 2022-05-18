@@ -20,7 +20,7 @@ class TestVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
     """
 
     def transformEnumType(self, c, type, typeinfo):
-        return c.component_base + "::" + type if typeinfo == "enum" else type
+        return f"{c.component_base}::{type}" if typeinfo == "enum" else type
 
     def getTlmType(self, c):
         def f(type, typeinfo):
@@ -41,7 +41,7 @@ class TestVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
     def getParamValTlm(self, c):
         def f(type, typeinfo):
             type = self.getTlmType(c)(type, typeinfo)
-            type = "const " + type + "&"
+            type = f"const {type}&"
             return ("val", type, "The channel value")
 
         return f
@@ -49,7 +49,7 @@ class TestVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
     def getParamValParam(self, c):
         def f(type, typeinfo):
             type = self.getParamType(c)(type, typeinfo)
-            type = "const " + type + "&"
+            type = f"const {type}&"
             return ("val", type, "The parameter value")
 
         return f
@@ -90,16 +90,16 @@ class TestVisitorBase(ComponentVisitorBase.ComponentVisitorBase):
             if namespace is None:
                 namespace = ""
             if type == "Serial":
-                type = namespace + "::InputSerializePort"
+                type = f"{namespace}::InputSerializePort"
             else:
-                type = namespace + "::Input" + type + "Port"
-            return ("*const " + instance, type, "The port")
+                type = f"{namespace}::Input{type}Port"
+            return f"*const {instance}", type, "The port"
 
         return f
 
     def initTest(self, obj, c):
         self.init(obj, c)
-        c.tester_base = c.name() + "TesterBase"
+        c.tester_base = f"{c.name()}TesterBase"
         c.get_command_params = self.getCommandParams(c)
         c.get_event_params = self.getEventParams(c)
         c.get_param_port = self.getParamPort(c)

@@ -88,16 +88,16 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         arg_str = ""
         for (name, mtype, size, format, comment) in obj.get_members():
             if isinstance(mtype, tuple):
-                arg_str += "{} {}, ".format(mtype[0][1], name)
+                arg_str += f"{mtype[0][1]} {name}, "
             elif mtype == "string":
-                arg_str += "const {}::{}String& {}, ".format(obj.get_name(), name, name)
+                arg_str += f"const {obj.get_name()}::{name}String& {name}, "
             elif mtype not in typelist:
-                arg_str += "const {}& {}, ".format(mtype, name)
+                arg_str += f"const {mtype}& {name}, "
             elif size is not None:
-                arg_str += "const {}* {}, ".format(mtype, name)
-                arg_str += "NATIVE_INT_TYPE %sSize, " % (name)
+                arg_str += f"const {mtype}* {name}, "
+                arg_str += f"NATIVE_INT_TYPE {name}Size, "
             else:
-                arg_str += "{} {}".format(mtype, name)
+                arg_str += f"{mtype} {name}"
                 arg_str += ", "
 
         arg_str = arg_str.strip(", ")
@@ -107,7 +107,7 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         """
         Return a list of port argument tuples
         """
-        arg_list = list()
+        arg_list = []
 
         for (name, mtype, size, format, comment) in obj.get_members():
             typeinfo = None
@@ -115,7 +115,7 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
                 mtype = mtype[0][1]
                 typeinfo = "enum"
             elif mtype == "string":
-                mtype = "{}::{}String".format(obj.get_name(), name)
+                mtype = f"{obj.get_name()}::{name}String"
                 typeinfo = "string"
             elif mtype not in typelist:
                 typeinfo = "extern"
@@ -132,18 +132,13 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         for e in enum_list:
             # No value, No comment
             if (e[1] is None) and (e[2] is None):
-                s = "%s," % (e[0])
-            # No value, With comment
-            elif (e[1] is None) and (e[2] is not None):
-                s = "{},  // {}".format(e[0], e[2])
-            # With value, No comment
-            elif (e[1] is not None) and (e[2] is None):
-                s = "{} = {},".format(e[0], e[1])
-            # With value and comment
-            elif (e[1] is not None) and (e[2] is not None):
-                s = "%s = %s,  // %s" % (e)
+                s = f"{e[0]},"
+            elif e[1] is None:
+                s = f"{e[0]},  // {e[2]}"
+            elif e[2] is None:
+                s = f"{e[0]} = {e[1]},"
             else:
-                pass
+                s = "%s = %s,  // %s" % (e)
             enum_str_list.append(s)
         enum_str_list[-1] = enum_str_list[-1].replace(",", "")
 
@@ -153,7 +148,7 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("SerializableVisitor:%s" % visit_str)
+        DEBUG.debug(f"SerializableVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -172,22 +167,20 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         dict_dir = os.environ["DICT_DIR"]
 
         if namespace is None:
-            output_dir = "%s/serializable/" % (dict_dir)
+            output_dir = f"{dict_dir}/serializable/"
         else:
-            output_dir = "{}/serializable/{}".format(
-                dict_dir, namespace.replace("::", "/")
-            )
+            output_dir = f'{dict_dir}/serializable/{namespace.replace("::", "/")}'
 
         # make directory
         if not (os.path.isdir(output_dir)):
             os.makedirs(output_dir)
-        pyfile = output_dir + "/" + obj.get_name() + ".py"
+        pyfile = f"{output_dir}/{obj.get_name()}.py"
 
         # make empty __init__.py
-        open("{}/{}".format(output_dir, "__init__.py"), "w").close()
+        open(f"{output_dir}/__init__.py", "w").close()
 
         # Open file for writing here...
-        DEBUG.info("Open file: %s" % pyfile)
+        DEBUG.info(f"Open file: {pyfile}")
         self.__fp = open(pyfile, "w")
         if self.__fp is None:
             raise Exception("Could not open %s file.") % pyfile
@@ -227,7 +220,7 @@ class SerializableVisitor(AbstractVisitor.AbstractVisitor):
         """
         c = SerialBody.SerialBody()
         c.name = obj.get_name()
-        c.mem_list = list()
+        c.mem_list = []
         for (n, t, s, f, comment) in obj.get_members():
             # convert XML types to Python classes
             (

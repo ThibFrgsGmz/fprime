@@ -57,39 +57,30 @@ class TopoFactory:
         self.__config = ConfigManager.ConfigManager.getInstance()
         self.__generate_new_IDS = True  # Work around to disable ID generation/table output in the case AcConstants.ini is used to build
 
-        self.__table_info = (
-            []
-        )  # ["COLUMN NAME" , <INT OF SPACE PADDING AROUND NAME> , "DESCRIPTION"]
-        self.__table_info.append(["INSTANCE NAME", 5, "Name of the instance object."])
-        self.__table_info.append(["BASE ID (HEX)", 0, "Base ID set for the instance."])
-        self.__table_info.append(
+        self.__table_info = [
+            ["INSTANCE NAME", 5, "Name of the instance object."],
+            ["BASE ID (HEX)", 0, "Base ID set for the instance."],
             [
                 "REQUESTED WINDOW SIZE",
                 0,
                 "Specified by either the 'base_id_range' attribute in the instance tag or by finding the max of the 'base_id_range' attribute in the topology tag and the largest internal ID of the instance.",
-            ]
-        )
-        self.__table_info.append(
+            ],
             [
                 "DIFFERENCED ID WINDOW SIZE",
                 0,
                 "Calculated by subtracting the current base ID from the next base ID.",
-            ]
-        )
-        self.__table_info.append(
+            ],
             [
                 "LARGEST COMPONENT INTERNAL ID",
                 0,
                 "The largest ID found in the events, channels, and commands of the instance.",
-            ]
-        )
-        self.__table_info.append(
+            ],
             [
                 "MAX AMOUNT OF IDS",
                 0,
                 "The largest amount of items from either events, channels, or commands.",
-            ]
-        )
+            ],
+        ]
 
     def set_generate_ID(self, value):
         """
@@ -125,10 +116,7 @@ class TopoFactory:
             try:
                 file_path = locate_build_root(comp_xml_path)
             except (BuildRootMissingException, BuildRootCollisionException) as bre:
-                stri = "ERROR: Could not find XML file {}. {}".format(
-                    comp_xml_path,
-                    str(bre),
-                )
+                stri = f"ERROR: Could not find XML file {comp_xml_path}. {str(bre)}"
                 raise OSError(stri)
             processedXML = XmlComponentParser.XmlComponentParser(file_path)
             comp_name = processedXML.get_component().get_name()
@@ -137,10 +125,9 @@ class TopoFactory:
         for instance in x.get_instances():
             if instance.get_type() not in list(componentXMLNameToComponent.keys()):
                 PRINT.info(
-                    "Component XML file type {} was not specified in the topology XML. Please specify the path using <import_component_type> tags.".format(
-                        instance.get_type()
-                    )
+                    f"Component XML file type {instance.get_type()} was not specified in the topology XML. Please specify the path using <import_component_type> tags."
                 )
+
             else:
                 instance.set_component_object(
                     componentXMLNameToComponent[instance.get_type()]
@@ -244,10 +231,9 @@ class TopoFactory:
 
             if id in event_id_list:
                 print(
-                    "IDCollisionError: Event ID {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Event ID {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             event_id_list.append(id)
 
@@ -262,10 +248,9 @@ class TopoFactory:
 
             if id in channel_id_list:
                 print(
-                    "IDCollisionError: Channel ID {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Channel ID {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             channel_id_list.append(id)
 
@@ -280,10 +265,9 @@ class TopoFactory:
 
             if id in command_id_list:
                 print(
-                    "IDCollisionError: Command ID {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Command ID {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             command_id_list.append(id)
 
@@ -300,10 +284,9 @@ class TopoFactory:
 
             if id in parameter_id_list:
                 print(
-                    "IDCollisionError: Parameter ID {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Parameter ID {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             parameter_id_list.append(id)
 
@@ -317,17 +300,15 @@ class TopoFactory:
 
             if id in parameter_opcode_list:
                 print(
-                    "IDCollisionError: Parameter set opcode {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Parameter set opcode {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             if id in command_id_list:
                 print(
-                    "IDCollisionError: Parameter set opcode {} in component {} is the same as another command id in this component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Parameter set opcode {id} in component {comp_xml.get_component().get_name()} is the same as another command id in this component."
                 )
+
                 sys.exit(-1)
             parameter_opcode_list.append(id)
 
@@ -340,17 +321,15 @@ class TopoFactory:
 
             if id in parameter_opcode_list:
                 print(
-                    "IDCollisionError: Parameter save opcode {} in component {} is used more than once in the same component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Parameter save opcode {id} in component {comp_xml.get_component().get_name()} is used more than once in the same component."
                 )
+
                 sys.exit(-1)
             if id in command_id_list:
                 print(
-                    "IDCollisionError: Parameter save opcode {} in component {} is the same as another command id in this component.".format(
-                        id, comp_xml.get_component().get_name()
-                    )
+                    f"IDCollisionError: Parameter save opcode {id} in component {comp_xml.get_component().get_name()} is the same as another command id in this component."
                 )
+
                 sys.exit(-1)
             parameter_opcode_list.append(id)
 
@@ -364,13 +343,15 @@ class TopoFactory:
         """
         Computes the max amount of IDs found in an XMLComponentParser object.
         """
-        if not comp_xml:
-            return None
-        return max(
-            len(comp_xml.get_events()),
-            len(comp_xml.get_channels()) + 2 * len(comp_xml.get_parameters()),
-            len(comp_xml.get_commands()),
-            len(comp_xml.get_parameters()),
+        return (
+            max(
+                len(comp_xml.get_events()),
+                len(comp_xml.get_channels()) + 2 * len(comp_xml.get_parameters()),
+                len(comp_xml.get_commands()),
+                len(comp_xml.get_parameters()),
+            )
+            if comp_xml
+            else None
         )
 
     def __compute_base_ids(
@@ -390,14 +371,15 @@ class TopoFactory:
         if assembly_base_id is None:
             assembly_base_id = self.__config.get("assembly", "baseID")
             PRINT.info(
-                "WARNING: No assembly base Id set, defaulting to %s" % assembly_base_id
+                f"WARNING: No assembly base Id set, defaulting to {assembly_base_id}"
             )
+
         if assembly_window is None:
             assembly_window = self.__config.get("assembly", "window")
             PRINT.info(
-                "WARNING: No assembly base Id window size set, defaulting to %s"
-                % assembly_window
+                f"WARNING: No assembly base Id window size set, defaulting to {assembly_window}"
             )
+
 
         out_base_ids_list = []
 
@@ -437,9 +419,8 @@ class TopoFactory:
         prev_name = "NONE"
         for t in initial_comp_with_ID:
             if t[1] < prev_id + prev_window:
-                err = "Component {} has a base ID {} which collides with the allocated IDs for component {} (base ID {} , window ID {})".format(
-                    t[0], t[1], prev_name, prev_id, prev_window
-                )
+                err = f"Component {t[0]} has a base ID {t[1]} which collides with the allocated IDs for component {prev_name} (base ID {prev_id} , window ID {prev_window})"
+
                 PRINT.info(err)
                 raise Exception(err)
             # Code below auto adjusts user specified IDS
@@ -455,19 +436,16 @@ class TopoFactory:
         prev_window = 0
         with_ID_obj = None
         without_ID_obj = None
-        while True:
-            if (
-                len(initial_comp_with_ID) == 0
-                and len(initial_comp_without_ID) == 0
-                and not with_ID_obj
-                and not without_ID_obj
-            ):
-                break
-
-            if len(initial_comp_with_ID) > 0 and with_ID_obj is None:
+        while not (
+            not initial_comp_with_ID
+            and not initial_comp_without_ID
+            and not with_ID_obj
+            and not without_ID_obj
+        ):
+            if initial_comp_with_ID and with_ID_obj is None:
                 with_ID_obj = initial_comp_with_ID.pop(0)
 
-            if len(initial_comp_without_ID) > 0 and without_ID_obj is None:
+            if initial_comp_without_ID and without_ID_obj is None:
                 without_ID_obj = initial_comp_without_ID.pop(0)
 
             next_poss_id = (
@@ -485,14 +463,13 @@ class TopoFactory:
             ):  # If items exist in the with  ID list but don't in the without ID list
                 out_base_ids_list.append(with_ID_obj)
                 with_ID_obj = None
-            else:  # if both objs exist
-                if next_poss_id + without_ID_obj[2] <= with_ID_obj[1]:
-                    without_ID_obj[1] = next_poss_id
-                    out_base_ids_list.append(without_ID_obj)
-                    without_ID_obj = None
-                else:
-                    out_base_ids_list.append(with_ID_obj)
-                    with_ID_obj = None
+            elif next_poss_id + without_ID_obj[2] <= with_ID_obj[1]:
+                without_ID_obj[1] = next_poss_id
+                out_base_ids_list.append(without_ID_obj)
+                without_ID_obj = None
+            else:
+                out_base_ids_list.append(with_ID_obj)
+                with_ID_obj = None
 
             prev_id = out_base_ids_list[-1][1]
             prev_window = out_base_ids_list[-1][2]
@@ -516,12 +493,10 @@ class TopoFactory:
             csv_removed_from_path_name = xml_file_path.replace(".XML", "")
             csv_removed_from_path_name = csv_removed_from_path_name.replace(".xml", "")
 
-            save_log_file_path = csv_removed_from_path_name + "_IDTableLog.txt"
+            save_log_file_path = f"{csv_removed_from_path_name}_IDTableLog.txt"
 
-            save_log_file = open(save_log_file_path, "w")
-            save_log_file.write(save_buffer)
-            save_log_file.close()
-
+            with open(save_log_file_path, "w") as save_log_file:
+                save_log_file.write(save_buffer)
         return out_base_ids_list
 
     def __print_base_id_table_comments(self, save_buffer):
@@ -545,16 +520,14 @@ class TopoFactory:
             firstRun = True
             while desc != "":
                 if firstRun:
-                    outString = desc[0:tableSize]
+                    outString = desc[:tableSize]
                     desc = desc[tableSize:]
                     firstRun = False
                 else:
                     newSize = tableSize - tabLen
-                    outString = " " * tabLen + desc[0:newSize]
+                    outString = " " * tabLen + desc[:newSize]
                     desc = desc[newSize:]
-                print_item = (
-                    "| " + outString + ((tableSize - len(outString)) * " ") + " |"
-                )
+                print_item = (f"| {outString}" + (tableSize - len(outString)) * " " + " |")
                 PRINT.info(print_item)
                 save_buffer += print_item + "\n"
 
@@ -579,35 +552,28 @@ class TopoFactory:
             PRINT.info(print_item)
 
         else:
-            ns = ""
-            if base_id_tuple[3].get_base_max_id_window() is None:
-                ns = " (D)"
-            data_row = []
-            data_row.append(str(base_id_tuple[0]))
-            data_row.append(
-                str(base_id_tuple[1]) + " (" + str(hex(base_id_tuple[1])) + ")"
-            )
-            data_row.append(str(base_id_tuple[2]) + ns)
-            data_row.append(str(actual_window_size))
-            data_row.append(str(base_id_tuple[4]))
-            data_row.append(str(base_id_tuple[5]))
+            ns = " (D)" if base_id_tuple[3].get_base_max_id_window() is None else ""
+            data_row = [
+                str(base_id_tuple[0]),
+                f"{str(base_id_tuple[1])} ({hex(base_id_tuple[1])})",
+                str(base_id_tuple[2]) + ns,
+                str(actual_window_size),
+                str(base_id_tuple[4]),
+                str(base_id_tuple[5]),
+            ]
 
             table_header_size = [
                 len(header[0]) + 2 * header[1] for header in self.__table_info
             ]
 
             while True:
-                # Check if the items in the data_row  have a length of zero
-                all_items_length_zero = True
-                for data_item in data_row:
-                    if len(data_item) != 0:
-                        all_items_length_zero = False
+                all_items_length_zero = all(len(data_item) == 0 for data_item in data_row)
                 if all_items_length_zero:
                     break
 
                 row_string = ""
                 for i in range(len(self.__table_info)):
-                    curr_write_string = data_row[i][0 : table_header_size[i]]
+                    curr_write_string = data_row[i][:table_header_size[i]]
                     data_row[i] = data_row[i][table_header_size[i] :]
                     if i != 0:
                         row_string += " | "
@@ -640,10 +606,9 @@ class TopoFactory:
             if id > abs(int(inst.get_base_id(), 0)):
                 b = abs(int(inst.get_base_id(), 0)) + id
                 PRINT.info(
-                    "WARNING: {} instance adding instance supplied base ID to the topology supplied base ID (New ID is {}) because instance supplied base ID is smaller than the topology supplied base ID.".format(
-                        n, b
-                    )
+                    f"WARNING: {n} instance adding instance supplied base ID to the topology supplied base ID (New ID is {b}) because instance supplied base ID is smaller than the topology supplied base ID."
                 )
+
             else:
                 b = abs(int(inst.get_base_id(), 0))
             PRINT.info("WARNING: %s instance resetting base id to %d" % (n, b))
@@ -664,35 +629,30 @@ class TopoFactory:
         if inst.get_base_id_window() is not None:
             w = abs(int(inst.get_base_id_window(), 0))
             PRINT.info(
-                "{} instance resetting base id window range to instance specified size ({})".format(
-                    n, w
-                )
+                f"{n} instance resetting base id window range to instance specified size ({w})"
             )
+
+        elif size > component_calculated_window_range:
+            w = size
+            PRINT.info(
+                f"{n} instance resetting base id window range to default topology size ({w})"
+            )
+
         else:
-            if size > component_calculated_window_range:
-                w = size
-                PRINT.info(
-                    "{} instance resetting base id window range to default topology size ({})".format(
-                        n, w
-                    )
-                )
-            else:
-                w = component_calculated_window_range
-                PRINT.info(
-                    "{} instance resetting base id window range to size calculated from the component XML file ({})".format(
-                        n, w
-                    )
-                )
+            w = component_calculated_window_range
+            PRINT.info(
+                f"{n} instance resetting base id window range to size calculated from the component XML file ({w})"
+            )
+
 
         if (
             component_calculated_window_range is not None
             and w < component_calculated_window_range
         ):
             PRINT.info(
-                "ERROR: The specified window range for component {} is {}, which is smaller than the calculated window range of {}. Please check the instance definitions in the topology xml file.".format(
-                    n, w, component_calculated_window_range
-                )
+                f"ERROR: The specified window range for component {n} is {w}, which is smaller than the calculated window range of {component_calculated_window_range}. Please check the instance definitions in the topology xml file."
             )
+
 
         return [
             n,

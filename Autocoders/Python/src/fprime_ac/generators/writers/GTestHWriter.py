@@ -36,11 +36,7 @@ class GTestHWriter(GTestWriterBase.GTestWriterBase):
         return self.emitNonPortParamsHpp(10, params)
 
     def emitMacroParams(self, params):
-        str = ""
-        for param in params:
-            name = param[0]
-            str += ", _" + name
-        return str
+        return "".join(", _" + param[0] for param in params)
 
     def _initFilesWrite(self, obj):
         self.openFile(self.FILE_NAME)

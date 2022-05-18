@@ -79,7 +79,7 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("CommandVisitor:%s" % visit_str)
+        DEBUG.debug(f"CommandVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -103,28 +103,26 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
             # multi-instance component. If there is only
             # one instance, use the opcode directly.
             # Otherwise, it will be the opcode + instance
-            self.__fp1 = list()
+            self.__fp1 = []
 
             if len(obj.get_opcodes()) == 1:
-                pyfile = "{}/{}.py".format(output_dir, obj.get_mnemonic())
+                pyfile = f"{output_dir}/{obj.get_mnemonic()}.py"
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open %s file." % pyfile)
+                    raise Exception(f"Could not open {pyfile} file.")
                 self.__fp1.append(fd)
             else:
-                inst = 0
-                for opcode in obj.get_opcodes():
+                for inst, opcode in enumerate(obj.get_opcodes()):
                     pyfile = "%s/%s_%d.py" % (output_dir, obj.get_mnemonic(), inst)
-                    inst += 1
-                    DEBUG.info("Open file: %s" % pyfile)
+                    DEBUG.info(f"Open file: {pyfile}")
                     fd = open(pyfile, "w")
                     if fd is None:
-                        raise Exception("Could not open %s file." % pyfile)
-                    DEBUG.info("Completed %s open" % pyfile)
+                        raise Exception(f"Could not open {pyfile} file.")
+                    DEBUG.info(f"Completed {pyfile} open")
                     self.__fp1.append(fd)
         elif type(obj) is Parameter.Parameter:
-            self.__fp1 = list()
-            self.__fp2 = list()
+            self.__fp1 = []
+            self.__fp2 = []
             # Command stem will be component name minus namespace converted to uppercase
             self.__stem = obj.get_name().upper()
 
@@ -132,39 +130,37 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
                 # set/save opcode numbers had better match
                 if len(obj.get_set_opcodes()) != len(obj.get_save_opcodes()):
                     raise Exception("set/save opcode quantities do not match!")
-                pyfile = "{}/{}_PRM_SET.py".format(output_dir, self.__stem)
+                pyfile = f"{output_dir}/{self.__stem}_PRM_SET.py"
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open %s file." % pyfile)
+                    raise Exception(f"Could not open {pyfile} file.")
                 self.__fp1.append(fd)
 
-                pyfile = "{}/{}_PRM_SAVE.py".format(output_dir, self.__stem)
+                pyfile = f"{output_dir}/{self.__stem}_PRM_SAVE.py"
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open %s file." % pyfile)
+                    raise Exception(f"Could not open {pyfile} file.")
                 self.__fp2.append(fd)
             else:
-                inst = 0
-                for opcode in obj.get_set_opcodes():
+                for inst, opcode in enumerate(obj.get_set_opcodes()):
                     pyfile = "%s/%s_%d_PRM_SET.py" % (output_dir, self.__stem, inst)
-                    DEBUG.info("Open file: %s" % pyfile)
+                    DEBUG.info(f"Open file: {pyfile}")
                     fd = open(pyfile, "w")
                     if fd is None:
-                        raise Exception("Could not open %s file." % pyfile)
+                        raise Exception(f"Could not open {pyfile} file.")
                     self.__fp1.append(fd)
-                    DEBUG.info("Completed %s open" % pyfile)
+                    DEBUG.info(f"Completed {pyfile} open")
 
                     pyfile = "%s/%s_%d_PRM_SAVE.py" % (output_dir, self.__stem, inst)
-                    DEBUG.info("Open file: %s" % pyfile)
+                    DEBUG.info(f"Open file: {pyfile}")
                     fd = open(pyfile, "w")
                     if fd is None:
-                        raise Exception("Could not open %s file." % pyfile)
+                        raise Exception(f"Could not open {pyfile} file.")
                     self.__fp2.append(fd)
-                    inst += 1
-                    DEBUG.info("Completed %s open" % pyfile)
+                    DEBUG.info(f"Completed {pyfile} open")
 
         else:
-            print("Invalid type %s" % type(obj))
+            print(f"Invalid type {type(obj)}")
             sys.exit(-1)
 
         # Open file for writing here...
@@ -175,38 +171,28 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
         @param obj: the instance of the command model to visit.
         """
         if type(obj) is Command.Command:
-            inst = 0
-            for opcode in obj.get_opcodes():
+            for inst, opcode in enumerate(obj.get_opcodes()):
                 c = CommandHeader.CommandHeader()
                 d = datetime.datetime.now()
                 c.date = d.strftime("%A, %d %B %Y")
                 c.user = getuser()
                 c.source = obj.get_xml_filename()
                 self._writeTmpl(c, self.__fp1[inst], "commandHeaderVisit")
-                inst += 1
-
         elif type(obj) is Parameter.Parameter:
-            # SET Command header
-            inst = 0
-            for opcode in obj.get_set_opcodes():
+            for inst, opcode in enumerate(obj.get_set_opcodes()):
                 c = CommandHeader.CommandHeader()
                 d = datetime.datetime.now()
                 c.date = d.strftime("%A, %d %B %Y")
                 c.user = getuser()
                 c.source = obj.get_xml_filename()
                 self._writeTmpl(c, self.__fp1[inst], "commandHeaderVisit")
-                inst += 1
-
-            # SAVE Command header
-            inst = 0
-            for opcode in obj.get_save_opcodes():
+            for inst, opcode in enumerate(obj.get_save_opcodes()):
                 c = CommandHeader.CommandHeader()
                 d = datetime.datetime.now()
                 c.date = d.strftime("%A, %d %B %Y")
                 c.user = getuser()
                 c.source = obj.get_xml_filename()
                 self._writeTmpl(c, self.__fp2[inst], "commandHeaderVisit")
-                inst += 1
 
     def DictBodyVisit(self, obj):
         """
@@ -214,21 +200,21 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
         @param obj: the instance of the command model to operation on.
         """
         if type(obj) is Command.Command:
-            inst = 0
-            for opcode in obj.get_opcodes():
+            for inst, opcode in enumerate(obj.get_opcodes()):
                 c = CommandBody.CommandBody()
                 # only add the suffix if there is more than one opcode per command
-                if len(obj.get_opcodes()) > 1:
-                    c.mnemonic = obj.get_mnemonic() + "_%d" % inst
-                else:
-                    c.mnemonic = obj.get_mnemonic()
+                c.mnemonic = (
+                    obj.get_mnemonic() + "_%d" % inst
+                    if len(obj.get_opcodes()) > 1
+                    else obj.get_mnemonic()
+                )
 
                 c.opcode = opcode
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 for arg_obj in obj.get_args():
                     # convert XML types to Python classes
@@ -247,23 +233,22 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
                     )
                 self._writeTmpl(c, self.__fp1[inst], "commandBodyVisit")
                 self.__fp1[inst].close()
-                inst += 1
         if type(obj) is Parameter.Parameter:
-            inst = 0
-            for opcode in obj.get_set_opcodes():
+            for inst, opcode in enumerate(obj.get_set_opcodes()):
                 # Set Command
                 c = CommandBody.CommandBody()
-                if len(obj.get_set_opcodes()) > 1:
-                    c.mnemonic = "%s_%d_PRM_SET" % (self.__stem, inst)
-                else:
-                    c.mnemonic = "%s_PRM_SET" % (self.__stem)
+                c.mnemonic = (
+                    "%s_%d_PRM_SET" % (self.__stem, inst)
+                    if len(obj.get_set_opcodes()) > 1
+                    else f"{self.__stem}_PRM_SET"
+                )
 
                 c.opcode = opcode
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 # convert XML types to Python classes
                 (
@@ -279,23 +264,21 @@ class CommandVisitor(AbstractVisitor.AbstractVisitor):
                 c.arglist.append((obj.get_name(), obj.get_comment(), type_string))
                 self._writeTmpl(c, self.__fp1[inst], "commandBodyVisit")
                 self.__fp1[inst].close()
-                inst += 1
-
-            inst = 0
-            for opcode in obj.get_save_opcodes():
+            for inst, opcode in enumerate(obj.get_save_opcodes()):
                 # Save Command
                 c = CommandBody.CommandBody()
-                if len(obj.get_save_opcodes()) > 1:
-                    c.mnemonic = "%s_%d_PRM_SAVE" % (self.__stem, inst)
-                else:
-                    c.mnemonic = "%s_PRM_SAVE" % (self.__stem)
+                c.mnemonic = (
+                    "%s_%d_PRM_SAVE" % (self.__stem, inst)
+                    if len(obj.get_save_opcodes()) > 1
+                    else f"{self.__stem}_PRM_SAVE"
+                )
+
                 c.opcode = opcode
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 self._writeTmpl(c, self.__fp2[inst], "commandBodyVisit")
                 self.__fp2[inst].close()
-                inst += 1

@@ -34,11 +34,7 @@ class GTestHVisitor(GTestVisitorBase.GTestVisitorBase):
         return self.emitNonPortParamsHpp(10, params)
 
     def emitMacroParams(self, params):
-        str = ""
-        for param in params:
-            name = param[0]
-            str += ", _" + name
-        return str
+        return "".join(", _" + param[0] for param in params)
 
     def initFilesVisit(self, obj):
         self.openFile("GTestBase.hpp")

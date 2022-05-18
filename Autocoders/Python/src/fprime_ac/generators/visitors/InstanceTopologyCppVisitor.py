@@ -82,7 +82,7 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("InstanceTopologyCppVisitor:%s" % visit_str)
+        DEBUG.debug(f"InstanceTopologyCppVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -105,14 +105,12 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
                     "assembly", "TopologyCpp"
                 )
                 DEBUG.info(
-                    "Generating code filename: %s topology, using default XML filename prefix..."
-                    % filename
+                    f"Generating code filename: {filename} topology, using default XML filename prefix..."
                 )
+
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXAppAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXAppAi.xml), Filename: {xml_file}"
+
                 PRINT.info(msg)
                 raise ValueError(msg)
             #
@@ -126,7 +124,7 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
                 self.partition = None
             #
             # Open file for writing here...
-            DEBUG.info("Open file: %s" % filename)
+            DEBUG.info(f"Open file: {filename}")
             self.__fp = open(filename, "w")
             if self.__fp is None:
                 raise Exception("Could not open %s file.") % filename
@@ -163,10 +161,9 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
         c.is_ptr = False
         if obj.is_ptr:
             c.is_ptr = True
-        else:
-            if not obj.connect_only:
-                c.is_ptr = True
-                obj.is_ptr = True
+        elif not obj.connect_only:
+            c.is_ptr = True
+            obj.is_ptr = True
 
         c.component_header_list = []
         for component in temp:
@@ -179,10 +176,7 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
             #
             # Added configurable override for includes for testing
             if self.__config.get("includes", "comp_include_path") == "None":
-                if relative_path is not None:
-                    path = relative_path
-                else:
-                    path = component.get_namespace()
+                path = component.get_namespace() if relative_path is None else relative_path
             else:
                 path = self.__config.get("includes", "comp_include_path")
             c.path = path
@@ -270,10 +264,9 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
         c.is_ptr = False
         if obj.is_ptr:
             c.is_ptr = True
-        else:
-            if not obj.connect_only:
-                c.is_ptr = True
-                obj.is_ptr = True
+        elif not obj.connect_only:
+            c.is_ptr = True
+            obj.is_ptr = True
 
         for component in obj.get_comp_list():
             d = {
@@ -304,10 +297,8 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
         # Generate Component Declarations
         for component in component_list:
             # Partition instance names
-            if part is None:
-                pass
-            else:
-                component["name"] = part + "_" + component["name"]
+            if part is not None:
+                component["name"] = f"{part}_" + component["name"]
             #
 
             if obj.is_ptr:
@@ -315,8 +306,6 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
                     """{name}_ptr = new {ns}::{ns}Impl("{name}");""".format(**component)
                 )
                 c.component_declarations.append(declaration_template)
-            else:
-                pass  ## If objects are generated as instances the object was instantiated in includes
         #
 
         #
@@ -327,11 +316,9 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
 
             declaration_template = None
             if obj.is_ptr:
-                declaration_template = """{}_ptr->setIdBase({});""".format(
-                    n, hex(base_id)
-                )
+                declaration_template = f"""{n}_ptr->setIdBase({hex(base_id)});"""
             else:
-                declaration_template = """{}.setIdBase({});""".format(n, base_id)
+                declaration_template = f"""{n}.setIdBase({base_id});"""
 
             c.component_reference_ids.append(declaration_template)
         #
@@ -358,12 +345,11 @@ class InstanceTopologyCppVisitor(AbstractVisitor.AbstractVisitor):
                 connection = """{comp}_ptr->set_{name}_OutputPort({num}, {tcomp}_ptr->get_{tname}_InputPort({tnum}));""".format(
                     **connection
                 )
-                connection_template = (comment, connection)
             else:
                 connection = """{comp}.set_{name}_OutputPort({num}, {tcomp}.get_{tname}_InputPort({tnum}));""".format(
                     **connection
                 )
-                connection_template = (comment, connection)
+            connection_template = (comment, connection)
             c.port_connections.append(connection_template)
 
         #

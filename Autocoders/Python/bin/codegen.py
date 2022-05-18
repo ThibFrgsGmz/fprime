@@ -315,12 +315,12 @@ def generate_topology(the_parsed_topology_xml, xml_filename, opt):
 
     if "Ai" in xml_filename:
         base = xml_filename.split("Ai")[0]
-        h_instance_name = base + "_H"
-        cpp_instance_name = base + "_Cpp"
-        csv_instance_name = base + "_ID"
-        cmd_html_instance_name = base + "_Cmd_HTML"
-        channel_html_instance_name = base + "_Channel_HTML"
-        event_html_instance_name = base + "_Event_HTML"
+        h_instance_name = f"{base}_H"
+        cpp_instance_name = f"{base}_Cpp"
+        csv_instance_name = f"{base}_ID"
+        cmd_html_instance_name = f"{base}_Cmd_HTML"
+        channel_html_instance_name = f"{base}_Channel_HTML"
+        event_html_instance_name = f"{base}_Event_HTML"
     else:
         PRINT.info("Missing Ai at end of file name...")
         raise OSError
@@ -388,61 +388,61 @@ def generate_topology(the_parsed_topology_xml, xml_filename, opt):
             )
         #
         xml_list = []
-        for parsed_xml_type in parsed_xml_dict:
+        for parsed_xml_type, value in parsed_xml_dict.items():
             if parsed_xml_dict[parsed_xml_type] is None:
                 PRINT.info(
                     f"XML of type {parsed_xml_type} is being used, but has not been parsed correctly. Check if file exists or add xml file with the 'import_component_type' tag to the Topology file."
                 )
                 raise Exception()
-            xml_list.append(parsed_xml_dict[parsed_xml_type])
+            xml_list.append(value)
             generate_component_instance_dictionary(
                 parsed_xml_dict[parsed_xml_type], opt, topology_model
             )
 
         topology_model.set_instance_xml_list(xml_list)
 
-        if opt.xml_topology_dict:
-            topology_dict = etree.Element("dictionary")
-            topology_dict.attrib["topology"] = the_parsed_topology_xml.get_name()
-            topology_dict.attrib["framework_version"] = get_fprime_version().lstrip("v")
-            topology_dict.attrib["project_version"] = get_project_version().lstrip("v")
+    if opt.xml_topology_dict:
+        topology_dict = etree.Element("dictionary")
+        topology_dict.attrib["topology"] = the_parsed_topology_xml.get_name()
+        topology_dict.attrib["framework_version"] = get_fprime_version().lstrip("v")
+        topology_dict.attrib["project_version"] = get_project_version().lstrip("v")
 
-            top_dict_gen = TopDictGenerator.TopDictGenerator(
-                parsed_xml_dict, PRINT.debug
-            )
-            for comp in the_parsed_topology_xml.get_instances():
-                comp_type = comp.get_type()
-                comp_name = comp.get_name()
-                comp_id = int(comp.get_base_id(), 0)
-                PRINT.debug(f"Processing {comp_name} [{comp_type}] ({hex(comp_id)})")
+        top_dict_gen = TopDictGenerator.TopDictGenerator(
+            parsed_xml_dict, PRINT.debug
+        )
+        for comp in the_parsed_topology_xml.get_instances():
+            comp_type = comp.get_type()
+            comp_name = comp.get_name()
+            comp_id = int(comp.get_base_id(), 0)
+            PRINT.debug(f"Processing {comp_name} [{comp_type}] ({hex(comp_id)})")
 
-                top_dict_gen.set_current_comp(comp)
-                top_dict_gen.check_for_enum_xml()
-                top_dict_gen.check_for_serial_xml()
-                top_dict_gen.check_for_commands()
-                top_dict_gen.check_for_channels()
-                top_dict_gen.check_for_events()
-                top_dict_gen.check_for_parameters()
-                top_dict_gen.check_for_arrays()
+            top_dict_gen.set_current_comp(comp)
+            top_dict_gen.check_for_enum_xml()
+            top_dict_gen.check_for_serial_xml()
+            top_dict_gen.check_for_commands()
+            top_dict_gen.check_for_channels()
+            top_dict_gen.check_for_events()
+            top_dict_gen.check_for_parameters()
+            top_dict_gen.check_for_arrays()
 
-            top_dict_gen.remove_duplicate_enums()
+        top_dict_gen.remove_duplicate_enums()
 
-            topology_dict.append(top_dict_gen.get_enum_list())
-            topology_dict.append(top_dict_gen.get_serializable_list())
-            topology_dict.append(top_dict_gen.get_array_list())
-            topology_dict.append(top_dict_gen.get_command_list())
-            topology_dict.append(top_dict_gen.get_event_list())
-            topology_dict.append(top_dict_gen.get_telemetry_list())
-            topology_dict.append(top_dict_gen.get_parameter_list())
+        topology_dict.append(top_dict_gen.get_enum_list())
+        topology_dict.append(top_dict_gen.get_serializable_list())
+        topology_dict.append(top_dict_gen.get_array_list())
+        topology_dict.append(top_dict_gen.get_command_list())
+        topology_dict.append(top_dict_gen.get_event_list())
+        topology_dict.append(top_dict_gen.get_telemetry_list())
+        topology_dict.append(top_dict_gen.get_parameter_list())
 
-            fileName = the_parsed_topology_xml.get_xml_filename().replace(
-                "Ai.xml", "Dictionary.xml"
-            )
-            PRINT.info(f"Generating XML dictionary {fileName}")
-            fd = open(
-                fileName, "wb"
-            )  # Note: binary forces the same encoding of the source files
-            fd.write(etree.tostring(topology_dict, pretty_print=True))
+        fileName = the_parsed_topology_xml.get_xml_filename().replace(
+            "Ai.xml", "Dictionary.xml"
+        )
+        PRINT.info(f"Generating XML dictionary {fileName}")
+        fd = open(
+            fileName, "wb"
+        )  # Note: binary forces the same encoding of the source files
+        fd.write(etree.tostring(topology_dict, pretty_print=True))
 
     initFiles = generator.create("initFiles")
     # startSource = generator.create("startSource")

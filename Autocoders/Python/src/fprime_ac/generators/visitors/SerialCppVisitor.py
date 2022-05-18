@@ -96,19 +96,19 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
             default,
         ) in obj.get_members():
             if isinstance(mtype, tuple):
-                arg_str += "{} {}, ".format(mtype[0][1], name)
+                arg_str += f"{mtype[0][1]} {name}, "
             elif mtype == "string" and array_size is None:
-                arg_str += "const {}::{}String& {}, ".format(obj.get_name(), name, name)
-            elif mtype == "string" and array_size is not None:
-                arg_str += "const {}::{}String* {}, ".format(obj.get_name(), name, name)
-                arg_str += "NATIVE_INT_TYPE %sSize, " % (name)
+                arg_str += f"const {obj.get_name()}::{name}String& {name}, "
+            elif mtype == "string":
+                arg_str += f"const {obj.get_name()}::{name}String* {name}, "
+                arg_str += f"NATIVE_INT_TYPE {name}Size, "
             elif mtype not in typelist:
-                arg_str += "const {}& {}, ".format(mtype, name)
+                arg_str += f"const {mtype}& {name}, "
             elif array_size is not None:
-                arg_str += "const {}* {}, ".format(mtype, name)
-                arg_str += "NATIVE_INT_TYPE %sSize, " % (name)
+                arg_str += f"const {mtype}* {name}, "
+                arg_str += f"NATIVE_INT_TYPE {name}Size, "
             else:
-                arg_str += "{} {}".format(mtype, name)
+                arg_str += f"{mtype} {name}"
                 arg_str += ", "
 
         arg_str = arg_str.strip(", ")
@@ -122,15 +122,11 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
         args = obj.get_members()
         arg_str = ""
         for arg in args:
+            arg_str += prefix + f"{arg[0]}"
             if arg[2] is not None:
-                arg_str += prefix + "%s" % arg[0]
                 arg_str += ", "
-                arg_str += "%s" % arg[2]
-                arg_str += ", "
-            else:
-                arg_str += prefix + "%s" % arg[0]
-                arg_str += ", "
-
+                arg_str += f"{arg[2]}"
+            arg_str += ", "
         arg_str = arg_str.strip(", ")
         return arg_str
 
@@ -138,7 +134,7 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
         """
         Return a list of struct member tuples
         """
-        arg_list = list()
+        arg_list = []
 
         for (
             name,
@@ -154,7 +150,7 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
                 mtype = mtype[0][1]
                 typeinfo = "enum"
             elif mtype == "string":
-                mtype = "{}::{}String".format(obj.get_name(), name)
+                mtype = f"{obj.get_name()}::{name}String"
                 typeinfo = "string"
             elif mtype not in typelist:
                 typeinfo = "extern"
@@ -183,16 +179,16 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
             default,
         ) in obj.get_members():
             if isinstance(mtype, tuple):
-                arg_str += "{} {}, ".format(mtype[0][1], name)
+                arg_str += f"{mtype[0][1]} {name}, "
             elif mtype == "string":
-                arg_str += "const {}::{}String& {}, ".format(obj.get_name(), name, name)
+                arg_str += f"const {obj.get_name()}::{name}String& {name}, "
             elif mtype not in typelist:
-                arg_str += "const {}& {}, ".format(mtype, name)
+                arg_str += f"const {mtype}& {name}, "
             elif array_size is not None:
-                arg_str += "const {} {}, ".format(mtype, name)
+                arg_str += f"const {mtype} {name}, "
                 contains_array = True
             else:
-                arg_str += "{} {}".format(mtype, name)
+                arg_str += f"{mtype} {name}"
                 arg_str += ", "
         if not contains_array:
             return None
@@ -203,7 +199,7 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("SerialCppVisitor:%s" % visit_str)
+        DEBUG.debug(f"SerialCppVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -223,9 +219,9 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
                 + self.__config.get("serialize", "SerializableCpp")
             )
             PRINT.info(
-                "Generating code filename: %s, using XML namespace and name attributes..."
-                % filename
+                f"Generating code filename: {filename}, using XML namespace and name attributes..."
             )
+
         else:
             xml_file = obj.get_xml_filename()
             x = xml_file.split(".")
@@ -237,19 +233,17 @@ class SerialCppVisitor(AbstractVisitor.AbstractVisitor):
                     "serialize", "SerializableCpp"
                 )
                 PRINT.info(
-                    "Generating code filename: %s, using default XML filename prefix..."
-                    % filename
+                    f"Generating code filename: {filename}, using default XML filename prefix..."
                 )
+
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXSerializableAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXSerializableAi.xml), Filename: {xml_file}"
+
                 PRINT.info(msg)
                 sys.exit(-1)
 
         # Open file for writing here...
-        DEBUG.info("Open file: %s" % filename)
+        DEBUG.info(f"Open file: {filename}")
         self.__fp = open(filename, "w")
         if self.__fp is None:
             raise Exception("Could not open %s file.") % filename

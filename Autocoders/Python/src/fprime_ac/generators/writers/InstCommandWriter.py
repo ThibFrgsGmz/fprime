@@ -79,7 +79,7 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("InstCommandWriter:%s" % write_str)
+        DEBUG.debug(f"InstCommandWriter:{write_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -104,7 +104,7 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 obj.get_component_base_name()
             ]
         except Exception:
-            if isinstance(obj, Parameter.Parameter) or isinstance(obj, Command.Command):
+            if isinstance(obj, (Parameter.Parameter, Command.Command)):
                 PRINT.info(
                     "ERROR: Could not find instance object for component "
                     + obj.get_component_base_name()
@@ -125,22 +125,20 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
             self.__fp1 = {}
             for instance_obj in instance_obj_list:
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), obj.get_mnemonic()
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_mnemonic()}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = obj.get_mnemonic()
                 else:
-                    fname = "{}_{}".format(instance_obj[0], obj.get_mnemonic())
-                pyfile = "{}/{}.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                    fname = f"{instance_obj[0]}_{obj.get_mnemonic()}"
+                pyfile = f"{output_dir}/{fname}.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open {} file.".format(pyfile))
-                DEBUG.info("Completed {} open".format(pyfile))
+                    raise Exception(f"Could not open {pyfile} file.")
+                DEBUG.info(f"Completed {pyfile} open")
                 self.__fp1[fname] = fd
 
         elif type(obj) is Parameter.Parameter:
@@ -151,34 +149,32 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
 
             for instance_obj in instance_obj_list:
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
-                pyfile = "{}/{}_PRM_SET.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                    fname = f"{instance_obj[0]}_{self.__stem}"
+                pyfile = f"{output_dir}/{fname}_PRM_SET.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open {} file.".format(pyfile))
+                    raise Exception(f"Could not open {pyfile} file.")
                 self.__fp1[fname] = fd
-                DEBUG.info("Completed {} open".format(pyfile))
+                DEBUG.info(f"Completed {pyfile} open")
 
-                pyfile = "{}/{}_PRM_SAVE.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                pyfile = f"{output_dir}/{fname}_PRM_SAVE.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 if fd is None:
-                    raise Exception("Could not open {} file.".format(pyfile))
+                    raise Exception(f"Could not open {pyfile} file.")
                 self.__fp2[fname] = fd
-                DEBUG.info("Completed {} open".format(pyfile))
+                DEBUG.info(f"Completed {pyfile} open")
 
         else:
-            print("Invalid type {}".format(obj))
+            print(f"Invalid type {obj}")
             sys.exit(-1)
 
         # Open file for writing here...
@@ -239,16 +235,14 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 c = CommandBody.CommandBody()
                 # only add the suffix if there is more than one opcode per command
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), obj.get_mnemonic()
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_mnemonic()}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = obj.get_mnemonic()
                 else:
-                    fname = "{}_{}".format(instance_obj[0], obj.get_mnemonic())
+                    fname = f"{instance_obj[0]}_{obj.get_mnemonic()}"
                 c.mnemonic = fname
                 try:
                     c.opcode = hex(int(float(obj.get_base_opcode())) + instance_obj[1])
@@ -257,8 +251,8 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 for arg_obj in obj.get_args():
                     # convert XML types to Python classes
@@ -284,18 +278,16 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 c = CommandBody.CommandBody()
 
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
+                    fname = f"{instance_obj[0]}_{self.__stem}"
 
-                c.mnemonic = fname + "_PRM_SET"
+                c.mnemonic = f"{fname}_PRM_SET"
 
                 try:
                     c.opcode = hex(int(float(obj.get_base_setop())) + instance_obj[1])
@@ -305,8 +297,8 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 # convert XML types to Python classes
                 (
@@ -327,18 +319,16 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 # Set Command
                 c = CommandBody.CommandBody()
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
+                    fname = f"{instance_obj[0]}_{self.__stem}"
 
-                c.mnemonic = fname + "_PRM_SAVE"
+                c.mnemonic = f"{fname}_PRM_SAVE"
 
                 try:
                     c.opcode = hex(int(float(obj.get_base_saveop())) + instance_obj[1])
@@ -347,8 +337,8 @@ class InstCommandWriter(AbstractDictWriter.AbstractDictWriter):
                 c.description = obj.get_comment()
                 c.component = obj.get_component_name()
 
-                c.arglist = list()
-                c.ser_import_list = list()
+                c.arglist = []
+                c.ser_import_list = []
 
                 self._writeTmpl(c, self.__fp2[fname], "commandBodyWrite")
                 self.__fp2[fname].close()

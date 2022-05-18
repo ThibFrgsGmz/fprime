@@ -77,7 +77,7 @@ class InstanceEventVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("InstanceEventVisitor:%s" % visit_str)
+        DEBUG.debug(f"InstanceEventVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -113,23 +113,21 @@ class InstanceEventVisitor(AbstractVisitor.AbstractVisitor):
 
         for instance_obj in instance_obj_list:
             if instance_obj[3].get_dict_short_name() is not None:
-                fname = "{}_{}".format(
-                    instance_obj[3].get_dict_short_name(), obj.get_name()
-                )
+                fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_name()}"
             elif (
                 not topology_model.get_prepend_instance_name()
                 and len(instance_obj_list) == 1
             ):
                 fname = obj.get_name()
             else:
-                fname = "{}_{}".format(instance_obj[0], obj.get_name())
+                fname = f"{instance_obj[0]}_{obj.get_name()}"
 
-            pyfile = "{}/{}.py".format(output_dir, fname)
-            DEBUG.info("Open file: {}".format(pyfile))
+            pyfile = f"{output_dir}/{fname}.py"
+            DEBUG.info(f"Open file: {pyfile}")
             fd = open(pyfile, "w")
             if fd is None:
-                raise Exception("Could not open {} file.".format(pyfile))
-            DEBUG.info("Completed {} open".format(pyfile))
+                raise Exception(f"Could not open {pyfile} file.")
+            DEBUG.info(f"Completed {pyfile} open")
             self.__fp[fname] = fd
 
     def DictHeaderVisit(self, obj, topology_model):
@@ -166,24 +164,21 @@ class InstanceEventVisitor(AbstractVisitor.AbstractVisitor):
         for instance_obj in instance_obj_list:
             c = EventBody.EventBody()
             if instance_obj[3].get_dict_short_name() is not None:
-                fname = "{}_{}".format(
-                    instance_obj[3].get_dict_short_name(), obj.get_name()
-                )
+                fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_name()}"
             elif (
                 not topology_model.get_prepend_instance_name()
                 and len(instance_obj_list) == 1
             ):
                 fname = obj.get_name()
             else:
-                fname = "{}_{}".format(instance_obj[0], obj.get_name())
+                fname = f"{instance_obj[0]}_{obj.get_name()}"
             c.name = fname
 
             if len(obj.get_ids()) > 1:
                 raise Exception(
-                    "There is more than one event id when creating dictionaries. Check xml of {} or see if multiple explicit IDs exist in the AcConstants.ini file".format(
-                        fname
-                    )
+                    f"There is more than one event id when creating dictionaries. Check xml of {fname} or see if multiple explicit IDs exist in the AcConstants.ini file"
                 )
+
             try:
                 c.id = hex(instance_obj[1] + int(float(obj.get_ids()[0])))
             except (TypeError, ValueError):
@@ -194,11 +189,9 @@ class InstanceEventVisitor(AbstractVisitor.AbstractVisitor):
             c.description = obj.get_comment()
             c.component = obj.get_component_name()
 
-            c.arglist = list()
-            c.ser_import_list = list()
-            arg_num = 0
-
-            for arg_obj in obj.get_args():
+            c.arglist = []
+            c.ser_import_list = []
+            for arg_num, arg_obj in enumerate(obj.get_args()):
                 n = arg_obj.get_name()
                 t = arg_obj.get_type()
                 s = arg_obj.get_size()
@@ -222,14 +215,13 @@ class InstanceEventVisitor(AbstractVisitor.AbstractVisitor):
                     # check for an error
                     if format_string is None:
                         PRINT.info(
-                            "Event %s in component %s had error processing format specifier"
-                            % (c.name, c.component)
+                            f"Event {c.name} in component {c.component} had error processing format specifier"
                         )
+
                         sys.exit(-1)
                     else:
                         c.format_string = format_string
 
                 c.arglist.append((n, d, type_string))
-                arg_num += 1
             self._writeTmpl(c, self.__fp[fname], "eventBodyVisit")
             self.__fp[fname].close()
