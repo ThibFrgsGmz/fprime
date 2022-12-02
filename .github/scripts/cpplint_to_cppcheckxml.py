@@ -1,60 +1,58 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-# Convert output from Google's cpplint.py to the cppcheck XML format for
-# consumption by the Jenkins cppcheck plugin.
-
+# Convert output from Google's cpplint to the cppcheck XML format
 # Reads from stdin and writes to stderr (to mimic cppcheck)
-
 # https://stackoverflow.com/questions/14172232/how-to-make-cpplint-work-with-jenkins-warnings-plugin
-# https://gist.github.com/esutton/c19606e6962bfe535b1d80d672afb82b
 
 import sys
 import re
 import xml.sax.saxutils
 
-def cpplint_score_to_cppcheck_severity(score):
-    # I'm making this up
-    if score in [1, 2]:
-        return 'style'
-    elif score in [3, 4]:
-        return 'warning'
-    elif score == 5:
-        return 'error'
+def cpplint_score_to_cppcheck_severity(err_score):
+    if err_score in [1, 2]:
+        return "style"
+    if err_score in [3, 4]:
+        return "warning"
+    if err_score == 5:
+        return "error"
 
-def parse():
-    # TODO: do this properly, using the xml module.
-    # Write header
-    sys.stderr.write('''<?xml version="1.0" encoding="UTF-8"?>\n''')
-    sys.stderr.write('''<results version="2">\n''')
-    sys.stderr.write('''<cppcheck version="1.90"/>\n''')
-    sys.stderr.write('''<errors>\n''')
+def fmt_report_from_cpplint_to_cppcheck():
+    sys.stderr.write("""<?xml version="1.0" encoding="UTF-8"?>\n""")
+    sys.stderr.write("""<results version="2">\n""")
+    sys.stderr.write("""<cppcheck version="1.90"/>\n""")
+    sys.stderr.write("""<errors>\n""")
 
-    # Do line-by-line conversion
-    r = re.compile('([^:]*):([0-9]*):  ([^\[]*)\[([^\]]*)\] \[([0-9]*)\].*')
+    compiled_regex = re.compile(
+        "([^:]*):([0-9]*):  ([^\[]*)\[([^\]]*)\] \[([0-9]*)\].*"
+    )
 
-    for l in sys.stdin.readlines():
-        m = r.match(l.strip())
-        if not m:
+    for line in sys.stdin.readlines():
+        matched_regex = compiled_regex.match(line.strip())
+        if not matched_regex:
             continue
-        g = m.groups()
-        if len(g) != 5:
+
+        matched_subgroups = matched_regex.groups()
+        if len(matched_subgroups) != 5:
             continue
-        fname, lineno, rawmsg, label, score = g
-        # Protect Jenkins from bad XML, which makes it barf
-        msg = xml.sax.saxutils.escape(rawmsg)
-        # A "[google] prefix to make easy to distinguish ccplint warning from cppcheck messages
-        label = f"{label}"
+
+        file_name, err_line, raw_err_msg, err_label, err_score = matched_subgroups
         # prepare data to be used as an attribute value
-        msg = xml.sax.saxutils.quoteattr(msg)
-        severity = cpplint_score_to_cppcheck_severity(int(score))
-        if severity in ['warning', 'error']:
-            sys.stderr.write(f'''<error id="{label}" severity="{severity}" msg={msg} verbose="">\n''')
-            sys.stderr.write(f'''<location file="{fname}" line="{lineno}" column="0"/>\n''')
-            sys.stderr.write('''</error>\n''')
+        err_msg = xml.sax.saxutils.escape(raw_err_msg)
+        err_msg = xml.sax.saxutils.quoteattr(err_msg)
 
-    sys.stderr.write('''</errors>\n''')
-    sys.stderr.write('''</results>\n''')
+        err_severity = cpplint_score_to_cppcheck_severity(int(err_score))
 
+        if err_severity in ["warning", "error"]:
+            sys.stderr.write(
+                f"""<error id="{err_label}" err_severity="{err_severity}" err_msg={err_msg} verbose="">\n"""
+            )
+            sys.stderr.write(
+                f"""<location file="{file_name}" line="{err_line}" column="0"/>\n"""
+            )
+            sys.stderr.write("""</error>\n""")
 
-if __name__ == '__main__':
-    parse()
+    sys.stderr.write("""</errors>\n""")
+    sys.stderr.write("""</results>\n""")
+
+if __name__ == "__main__":
+    fmt_report_from_cpplint_to_cppcheck()
