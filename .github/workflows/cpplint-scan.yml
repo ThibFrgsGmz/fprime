@@ -51,7 +51,7 @@ jobs:
 
       - name: Run cpplint
         run: |
-          echo CPPLINT_EXTENSIONS=--extensions=c,cpp,h,hpp  >> $GITHUB_ENV
+          echo CPPLINT_EXTENSIONS=--extensions=c,cpp,h,hpp  >> $GITHUB_ENV \
           cpplint --linelength=120  \
             --counting=detailed     \
             $CPPLINT_EXCLUDE        \
