@@ -34,7 +34,7 @@ jobs:
       #   run: npm install @microsoft/sarif-multitool
 
       - name: Run cpplint
-        run: cpplint --linelength=120 --counting=detailed --filter=-,+build/include_what_you_use,+build/c++11,+runtime,-runtime/indentation_namespace --exclude=$GITHUB_WORKSPACE/docs/* --exclude=$GITHUB_WORKSPACE/Autocoders/* --exclude=$GITHUB_WORKSPACE/cmake/* --exclude=$GITHUB_WORKSPACE/FppTest/* --exclude=$GITHUB_WORKSPACE/STest/* --extensions=c,cpp,h,hpp $( find . -name \*.hpp -or -name \*.cpp | grep -vE "^\.\/build\/" ) 2>&1 | python3 .github/scripts/cpplint_to_cppcheckxml.py &> cpplint_cppcheck_result.xml
+        run: cpplint --linelength=120 --counting=detailed --filter=-,+build/include_what_you_use,+build/c++11,+runtime,-runtime/indentation_namespace --exclude=docs/* --exclude=Autocoders/* --exclude=cmake/* --exclude=FppTest/* --exclude=STest/* --extensions=c,cpp,h,hpp $( find . -name \*.hpp -or -name \*.cpp | grep -vE "^\.\/build\/" ) 2>&1 | python3 .github/scripts/cpplint_to_cppcheckxml.py &> cpplint_cppcheck_result.xml
 
       # - name: Convert cppcheck results to SARIF
       #   run: npx "@microsoft/sarif-multitool" convert "cpplint_cppcheck_result.xml" --tool "CppCheck" --output "cpplint_cppcheck_result.sarif" --force
