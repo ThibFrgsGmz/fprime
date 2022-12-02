@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="2">
+    <cppcheck version="1.90" />
+    <errors>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;algorithm&amp;gt; for min  " verbose="">
+            <location file="./CFDP/Checksum/Checksum.cpp" line="83" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./CFDP/Checksum/Checksum.hpp" line="41" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Drv/BlockDriver/BlockDriverImpl.hpp" line="13" column="0" />
+        </error>
+        <error id="runtime/int" severity="warning" msg="Use int16/int64/etc, rather than the C type long  " verbose="">
+            <location file="./Drv/Ip/IpSocket.cpp" line="91" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Drv/LinuxI2cDriver/LinuxI2cDriver.hpp" line="32" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Drv/TcpClient/TcpClientComponentImpl.hpp" line="33" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Drv/TcpServer/TcpServerComponentImpl.hpp" line="34" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Drv/Udp/UdpComponentImpl.hpp" line="33" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Cmd/CmdString.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Cmd/CmdString.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Comp/ActiveComponentBase.hpp" line="34" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Comp/PassiveComponentBase.hpp" line="21" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Comp/QueuedComponentBase.hpp" line="33" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Log/LogString.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Log/LogString.hpp" line="21" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Log/TextLogString.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Log/TextLogString.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Logger/test/ut/LoggerRules.hpp" line="35" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Logger/test/ut/LoggerRules.hpp" line="50" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Logger/test/ut/LoggerRules.hpp" line="66" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Obj/ObjBase.hpp" line="91" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Port/InputPortBase.hpp" line="35" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Port/InputSerializePort.hpp" line="32" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Port/OutputPortBase.hpp" line="34" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Port/OutputSerializePort.hpp" line="27" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Port/PortBase.hpp" line="47" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Prm/PrmString.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Prm/PrmString.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Test/String.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Test/String.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Tlm/TlmString.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Tlm/TlmString.hpp" line="21" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/EightyCharString.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/EightyCharString.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/InternalInterfaceString.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/InternalInterfaceString.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/MemAllocator.hpp" line="72" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="14" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="27" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="33" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="40" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="46" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="53" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="59" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="67" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="73" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="79" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/PolyType.hpp" line="85" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/Serializable.hpp" line="172" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/String.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Fw/Types/String.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/Posix/IPCQueue.cpp" line="30" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/Posix/Queue.cpp" line="26" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;algorithm&amp;gt; for max  " verbose="">
+            <location file="./Os/Pthreads/MaxHeap/MaxHeap.cpp" line="221" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;utility&amp;gt; for swap  " verbose="">
+            <location file="./Os/Pthreads/MaxHeap/MaxHeap.cpp" line="253" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;utility&amp;gt; for swap  " verbose="">
+            <location file="./Os/Pthreads/MaxHeap/MaxHeap.hpp" line="96" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;algorithm&amp;gt; for max  " verbose="">
+            <location file="./Os/Pthreads/MaxHeap/MaxHeap.hpp" line="98" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/Queue.hpp" line="84" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/QueueString.hpp" line="12" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/QueueString.hpp" line="13" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/TaskString.hpp" line="12" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Os/TaskString.hpp" line="13" column="0" />
+        </error>
+        <error id="build/c++11" severity="error" msg="&amp;lt;mutex&amp;gt; is an unapproved C++11 header.  " verbose="">
+            <location file="./Os/test/ut/OsMutexBasicLockableTest.cpp" line="6" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Ref/RecvBuffApp/RecvBuffComponentImpl.hpp" line="12" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Ref/SendBuffApp/SendBuffComponentImpl.hpp" line="14" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ActiveLogger/ActiveLoggerImpl.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ActiveLogger/test/ut/ActiveLoggerImplTester.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ActiveRateGroup/ActiveRateGroup.hpp" line="41" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ActiveRateGroup/test/ut/ActiveRateGroupImplTester.hpp" line="26" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="106" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="147" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="209" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="319" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="330" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/ActiveTextLogger/test/ut/Tester.cpp" line="344" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/CmdDispatcher/CommandDispatcherImpl.hpp" line="41" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/CmdDispatcher/test/ut/CommandDispatcherImplTester.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ComLogger/test/ut/Tester.hpp" line="26" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/ComSplitter/ComSplitter.hpp" line="31" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;algorithm&amp;gt; for min  " verbose="">
+            <location file="./Svc/Deframer/test/ut-fprime-protocol/SendBuffer.cpp" line="91" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/Deframer/test/ut-fprime-protocol/Tester.hpp" line="209" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/Deframer/test/ut/Tester.hpp" line="40" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Constructors callable with one argument should be marked explicit.  " verbose="">
+            <location file="./Svc/Deframer/test/ut/Tester.hpp" line="51" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileDownlink/FileDownlink.hpp" line="128" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileDownlink/FileDownlink.hpp" line="156" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileDownlink/FileDownlink.hpp" line="184" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileUplink/FileUplink.hpp" line="81" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileUplink/FileUplink.hpp" line="109" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/FileUplink/FileUplink.hpp" line="137" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/Framer/test/ut/Tester.hpp" line="32" column="0" />
+        </error>
+        <error id="build/include_what_you_use" severity="warning" msg="Add #include &amp;lt;algorithm&amp;gt; for min  " verbose="">
+            <location file="./Svc/GenericHub/test/ut/Tester.cpp" line="215" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/DeframerRules.hpp" line="34" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/DeframerRules.hpp" line="45" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/DeframerRules.hpp" line="56" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/DeframerRules.hpp" line="67" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/GroundInterfaceRules.hpp" line="34" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/GroundInterfaceRules.hpp" line="45" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/GroundInterfaceRules.hpp" line="56" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/GroundInterface/test/ut/GroundInterfaceRules.hpp" line="67" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/Health/HealthComponentImpl.hpp" line="56" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="263" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="297" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="319" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="349" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="409" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="438" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="498" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="659" column="0" />
+        </error>
+        <error id="runtime/printf" severity="error" msg="Never use sprintf. Use snprintf instead.  " verbose="">
+            <location file="./Svc/Health/test/ut/Tester.cpp" line="751" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/LinuxTime/LinuxTimeImpl.hpp" line="17" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/LinuxTime/test/ut/Tester.hpp" line="23" column="0" />
+        </error>
+        <error id="runtime/int" severity="warning" msg="Use int16/int64/etc, rather than the C type long  " verbose="">
+            <location file="./Svc/LinuxTimer/LinuxTimerComponentImplTimerFd.cpp" line="38" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PassiveConsoleTextLogger/ConsoleTextLoggerImpl.hpp" line="13" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PolyDb/PolyDbImpl.hpp" line="40" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PolyDb/test/ut/PolyDbComponentTestAc.hpp" line="33" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PolyDb/test/ut/PolyDbImplTester.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PrmDb/PrmDbImpl.hpp" line="42" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/PrmDb/test/ut/PrmDbImplTester.hpp" line="20" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/RateGroupDriver/RateGroupDriver.hpp" line="44" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/RateGroupDriver/test/ut/RateGroupDriverImplTester.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/TlmChan/TlmChanImpl.hpp" line="26" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/TlmChan/test/perf/TelemChanImplTester.hpp" line="19" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/TlmChan/test/perf/TelemChanImplTester.hpp" line="27" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/TlmChan/test/perf/TelemStoreComponentTestAc.hpp" line="37" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/TlmChan/test/ut/TlmChanImplTester.hpp" line="18" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/UdpReceiver/UdpReceiverComponentImpl.hpp" line="87" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Svc/UdpSender/UdpSenderComponentImpl.hpp" line="101" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/LockGuard.hpp" line="26" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="38" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="54" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="70" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="86" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="102" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="118" column="0" />
+        </error>
+        <error id="runtime/explicit" severity="error" msg="Single-parameter constructors should be marked explicit.  " verbose="">
+            <location file="./Utils/Types/test/ut/CircularBuffer/CircularRules.hpp" line="134" column="0" />
+        </error>
+    </errors>
+</results>

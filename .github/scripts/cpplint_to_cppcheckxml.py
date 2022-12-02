@@ -25,7 +25,9 @@ def parse():
     # TODO: do this properly, using the xml module.
     # Write header
     sys.stderr.write('''<?xml version="1.0" encoding="UTF-8"?>\n''')
-    sys.stderr.write('''<results>\n''')
+    sys.stderr.write('''<results version="2">\n''')
+    sys.stderr.write('''<cppcheck version="1.90"/>\n''')
+    sys.stderr.write('''<errors>\n''')
 
     # Do line-by-line conversion
     r = re.compile('([^:]*):([0-9]*):  ([^\[]*)\[([^\]]*)\] \[([0-9]*)\].*')
@@ -41,14 +43,16 @@ def parse():
         # Protect Jenkins from bad XML, which makes it barf
         msg = xml.sax.saxutils.escape(rawmsg)
         # A "[google] prefix to make easy to distinguish ccplint warning from cppcheck messages
-        label = f"[google]/{label}"
+        label = f"{label}"
         # prepare data to be used as an attribute value
         msg = xml.sax.saxutils.quoteattr(msg)
         severity = cpplint_score_to_cppcheck_severity(int(score))
         if severity in ['warning', 'error']:
-            sys.stderr.write('''<error file="%s" line="%s" id="%s" severity="%s" msg=%s/>\n'''%(fname, lineno, label, severity, msg))
+            sys.stderr.write(f'''<error id="{label}" severity="{severity}" msg={msg} verbose="">\n''')
+            sys.stderr.write(f'''<location file="{fname}" line="{lineno}" column="0"/>\n''')
+            sys.stderr.write('''</error>\n''')
 
-    # Write footer
+    sys.stderr.write('''</errors>\n''')
     sys.stderr.write('''</results>\n''')
 
 
