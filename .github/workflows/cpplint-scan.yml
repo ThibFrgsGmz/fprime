@@ -25,10 +25,10 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: Install cpplint
-        run: pip install cpplint
+        run: pip install cpplint xsltproc -y
 
-      - name: Install sarif tool
-        run: npm install @microsoft/sarif-multitool
+      # - name: Install sarif tool
+      #   run: npm install @microsoft/sarif-multitool
 
       - name: Run cpplint
         run: cpplint --linelength=120   \
