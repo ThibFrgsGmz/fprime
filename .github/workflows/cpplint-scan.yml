@@ -36,7 +36,7 @@ jobs:
       - name: Run cpplint
         run: cpplint --linelength=120   \
           --counting=detailed           \
-          --filter=-,+build/include_what_you_use,+build/c++11,+build/include_order,+runtime,-runtime/indentation_namespace  \
+          --filter=-,+build/include_what_you_use,+build/c++11,+runtime,-runtime/indentation_namespace  \
           --exclude=docs/*              \
           --exclude=Autocoders/*        \
           --exclude=cmake/*             \
