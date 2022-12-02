@@ -52,10 +52,10 @@ jobs:
       - name: Archive static analysis artifacts to download and view
         uses: actions/upload-artifact@v3
         with:
-          name: cppcheck-errors
+          name: cpplint-errors
           path: ./*cpplint_cppcheck_result.*
 
-      # Make the whole step fail if there is an error detected by cppcheck. By default, GitHub Actions enables the set -e.
+      # Make the whole step fail if there is an error detected by cpplint. By default, GitHub Actions enables the set -e.
       # See https://stackoverflow.com/questions/73066461/github-actions-why-an-intermediate-command-failure-in-shell-script-would-cause.
       # - name: Check for reported errors
       #   run: tail -n 1 cpplint_cppcheck_result.txt | grep -q '^\*\*0 error(s) reported\*\*$'

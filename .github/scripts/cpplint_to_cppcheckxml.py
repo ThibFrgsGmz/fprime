@@ -46,7 +46,7 @@ def fmt_report_from_cpplint_to_cppcheck():
 
         if err_severity in ["warning", "error"]:
             sys.stderr.write(
-                f"""<error id="{err_label}" err_severity="{err_severity}" err_msg={err_msg} verbose="">\n"""
+                f"""<error id="{err_label}" severity="{err_severity}" msg={err_msg} verbose="">\n"""
             )
             sys.stderr.write(
                 f"""<location file="{file_name}" line="{err_line}" column="0"/>\n"""
