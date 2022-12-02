@@ -8,6 +8,7 @@ import sys
 import re
 import xml.sax.saxutils
 
+
 def cpplint_score_to_cppcheck_severity(err_score):
     if err_score in [1, 2]:
         return "style"
@@ -15,6 +16,7 @@ def cpplint_score_to_cppcheck_severity(err_score):
         return "warning"
     if err_score == 5:
         return "error"
+
 
 def fmt_report_from_cpplint_to_cppcheck():
     sys.stderr.write("""<?xml version="1.0" encoding="UTF-8"?>\n""")
@@ -53,6 +55,7 @@ def fmt_report_from_cpplint_to_cppcheck():
 
     sys.stderr.write("""</errors>\n""")
     sys.stderr.write("""</results>\n""")
+
 
 if __name__ == "__main__":
     fmt_report_from_cpplint_to_cppcheck()
