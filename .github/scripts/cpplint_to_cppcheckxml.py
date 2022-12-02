@@ -45,7 +45,8 @@ def parse():
         # prepare data to be used as an attribute value
         msg = xml.sax.saxutils.quoteattr(msg)
         severity = cpplint_score_to_cppcheck_severity(int(score))
-        sys.stderr.write('''<error file="%s" line="%s" id="%s" severity="%s" msg=%s/>\n'''%(fname, lineno, label, severity, msg))
+        if severity in ['warning', 'error']:
+            sys.stderr.write('''<error file="%s" line="%s" id="%s" severity="%s" msg=%s/>\n'''%(fname, lineno, label, severity, msg))
 
     # Write footer
     sys.stderr.write('''</results>\n''')
