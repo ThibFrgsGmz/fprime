@@ -75,15 +75,13 @@ class InstanceTopologyEventsHTMLVisitor(AbstractVisitor.AbstractVisitor):
         DEBUG.info("InstanceTopologyHTMLVisitor: Instanced.")
         self.bodytext = ""
         self.prototypetext = ""
-        self.__fp_dict = (
-            dict()
-        )  # dictionary of instance name keyword to file handle pointer
+        self.__fp_dict = {}
 
     def _writeTmpl(self, instance, c, visit_str):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("InstanceTopologyHTMLVisitor:%s" % visit_str)
+        DEBUG.debug(f"InstanceTopologyHTMLVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp_dict[instance].writelines(c.__str__())
@@ -109,19 +107,16 @@ class InstanceTopologyEventsHTMLVisitor(AbstractVisitor.AbstractVisitor):
                 name = t[0]
                 events_list = t[3].get_comp_xml().get_events()
                 if len(events_list) > 0:
-                    filename = "%s_events.html" % t[0]
+                    filename = f"{t[0]}_events.html"
                     # Open file for writing here...
-                    DEBUG.info("Open file: %s" % filename)
+                    DEBUG.info(f"Open file: {filename}")
                     try:
                         self.__fp_dict[name] = open(filename, "w")
                         DEBUG.info("Completed")
                     except OSError:
-                        PRINT.info("Could not open %s file." % filename)
+                        PRINT.info(f"Could not open {filename} file.")
                         sys.exit(-1)
-                    DEBUG.info(
-                        "Generating HTML Event Table for %s:%s component instance..."
-                        % (t[0], k)
-                    )
+                    DEBUG.info(f"Generating HTML Event Table for {t[0]}:{k} component instance...")
         os.chdir("..")
 
     def startSourceFilesVisit(self, obj):
@@ -184,7 +179,7 @@ class InstanceTopologyEventsHTMLVisitor(AbstractVisitor.AbstractVisitor):
                 if t[0] in list(self.__fp_dict.keys()):
                     # print "\tInstance: %s, Base ID: %s\n" % (t[0],t[1])
                     eobj = t[3].get_comp_xml()
-                    c.name = "{}:{}".format(t[0], k)
+                    c.name = f"{t[0]}:{k}"
                     c.base_id = t[1]
                     c.has_events = len(eobj.get_events()) > 0
                     c.events = self.__model_parser.getEventsList(eobj)

@@ -78,7 +78,7 @@ class EventVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("EventVisitor:%s" % visit_str)
+        DEBUG.debug(f"EventVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -99,14 +99,12 @@ class EventVisitor(AbstractVisitor.AbstractVisitor):
         self.__fp = []
 
         if len(obj.get_ids()) == 1:
-            pyfile = "{}/{}.py".format(output_dir, obj.get_name())
+            pyfile = f"{output_dir}/{obj.get_name()}.py"
             fd = open(pyfile, "w")
             self.__fp.append(fd)
         else:
-            inst = 0
-            for id in obj.get_ids():
+            for inst, _ in enumerate(obj.get_ids()):
                 pyfile = "%s/%s_%d.py" % (output_dir, obj.get_name(), inst)
-                inst += 1
                 DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 DEBUG.info(f"Completed {pyfile} open")
@@ -168,8 +166,7 @@ class EventVisitor(AbstractVisitor.AbstractVisitor):
                     # check for an error
                     if format_string is None:
                         PRINT.info(
-                            "Event %s in component %s had error processing format specifier"
-                            % (c.name, c.component)
+                            f"Event {c.name} in component {c.component} had error processing format specifier"
                         )
                         sys.exit(-1)
                     else:

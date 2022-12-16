@@ -37,15 +37,12 @@ class XmlParser:
         self.__root = None
         #
         if not os.path.isfile(xml_file):
-            stri = "ERROR: Could not find specified XML file {}.".format(xml_file)
+            stri = f"ERROR: Could not find specified XML file {xml_file}."
             raise OSError(stri)
 
-        fd = open(xml_file)
-
-        element_tree = etree.parse(fd)
-        self.__root = element_tree.getroot().tag
-
-        fd.close()
+        with open(xml_file) as fd:
+            element_tree = etree.parse(fd)
+            self.__root = element_tree.getroot().tag
 
     def __call__(self):
         """"""

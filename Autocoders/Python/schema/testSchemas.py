@@ -47,13 +47,11 @@ class schema_test:
         Ensures file exists and has the proper extension.
         """
         if not os.path.exists(file_name):
-            raise Exception("File does not exist - {}.".format(file_name))
+            raise Exception(f"File does not exist - {file_name}.")
 
         if not file_name.upper().endswith(f".{extension.upper()}"):
             raise Exception(
-                "File does not end with proper extension {} - {}".format(
-                    extension, file_name
-                )
+                f"File does not end with proper extension {extension} - {file_name}"
             )
 
         return True
@@ -95,16 +93,12 @@ class schema_test:
 
         if len(list_of_root_tags) == 0:
             raise Exception(
-                "{} : List of root tags empty in parse_and_add_directory!".format(
-                    self.__schema_name
-                )
+                f"{self.__schema_name} : List of root tags empty in parse_and_add_directory!"
             )
 
         if not os.path.isdir(directory):
             raise Exception(
-                "{} : Directory {} does not exist in parse_and_add_directory!".format(
-                    self.__schema_name, directory
-                )
+                f"{self.__schema_name} : Directory {directory} does not exist in parse_and_add_directory!"
             )
 
         for subdir, dirs, files in os.walk(directory):
@@ -192,15 +186,13 @@ class schema_test:
         """
         Prints a header string for a schema_test object.
         """
-        print("\nTesting {} - {}\n".format(self.__schema_name, self.__schema_path))
+        print(f"\nTesting {self.__schema_name} - {self.__schema_path}\n")
 
 
 def setup():
     """
     Sets up and returns test_list, which is a set of schema_test objects.
     """
-    test_list = []
-
     # Create schema object
     topology_test = schema_test("Topology", "ISF/topology_schema.rng")
     component_test = schema_test("Component", "ISF/component_schema.rng")
@@ -390,22 +382,16 @@ def setup():
     serializable_test.parse_and_add_directory(["serializable"], "../test")
     topology_test.parse_and_add_directory(["deployment", "assembly"], "../test")
 
-    # Add schemas to test_list
-
-    test_list.extend(
-        (
-            topology_test,
-            component_test,
-            command_test,
-            parameter_test,
-            channel_test,
-            interface_test,
-            serializable_test,
-            event_test,
-        )
-    )
-
-    return test_list
+    return [
+        topology_test,
+        component_test,
+        command_test,
+        parameter_test,
+        channel_test,
+        interface_test,
+        serializable_test,
+        event_test,
+    ]
 
 
 def get_test_list():
@@ -413,8 +399,7 @@ def get_test_list():
     out = []
     for test_obj in test_list:
         tl = test_obj.get_test_amount()
-        for ti in range(tl):
-            out.append((test_obj.run_test, ti))
+        out.extend((test_obj.run_test, ti) for ti in range(tl))
     return out
 
 

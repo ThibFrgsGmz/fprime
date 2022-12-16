@@ -114,7 +114,7 @@ def main():
 
     xmlfile = "../../test/Msg1InterfaceAi.xml"
 
-    print("Port XML parse test (%s)" % xmlfile)
+    print(f"Port XML parse test ({xmlfile})")
     #
     # Basic usage of this factory to create the component meta-model
     #
@@ -136,18 +136,17 @@ def main():
     #
     # End of usage and port is the instance of model to be used.
     #
-    print("Port: %s" % port)
-    print("Namespace: %s" % port.get_namespace())
-    print("Type: %s" % port.get_type())
-    print("Comment: %s" % port.get_ifcomment())
-    print("Includes: %s" % port.get_includes())
+    print(f"Port: {port}")
+    print(f"Namespace: {port.get_namespace()}")
+    print(f"Type: {port.get_type()}")
+    print(f"Comment: {port.get_ifcomment()}")
+    print(f"Includes: {port.get_includes()}")
     print()
     args = port.get_args()
-    print("Args: %s" % args)
+    print(f"Args: {args}")
     for a in args:
         print(
-            "Arg Name: %s Type: %s Comment: %s"
-            % (a.get_name(), a.get_type(), a.get_comment())
+            f"Arg Name: {a.get_name()} Type: {a.get_type()} Comment: {a.get_comment()}"
         )
 
 

@@ -37,7 +37,7 @@ class GTestHVisitor(GTestVisitorBase.GTestVisitorBase):
         str = ""
         for param in params:
             name = param[0]
-            str += ", _" + name
+            str += f", _{name}"
         return str
 
     def initFilesVisit(self, obj):

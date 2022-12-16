@@ -79,7 +79,7 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("InstanceCommandVisitor:%s" % visit_str)
+        DEBUG.debug(f"InstanceCommandVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         fp.writelines(c.__str__())
@@ -125,20 +125,18 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
             self.__fp1 = {}
             for instance_obj in instance_obj_list:
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), obj.get_mnemonic()
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_mnemonic()}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = obj.get_mnemonic()
                 else:
-                    fname = "{}_{}".format(instance_obj[0], obj.get_mnemonic())
-                pyfile = "{}/{}.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                    fname = f"{instance_obj[0]}_{obj.get_mnemonic()}"
+                pyfile = f"{output_dir}/{fname}.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
-                DEBUG.info("Completed {} open".format(pyfile))
+                DEBUG.info(f"Completed {pyfile} open")
                 self.__fp1[fname] = fd
 
         elif type(obj) is Parameter.Parameter:
@@ -149,30 +147,28 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
 
             for instance_obj in instance_obj_list:
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
-                pyfile = "{}/{}_PRM_SET.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                    fname = f"{instance_obj[0]}_{self.__stem}"
+                pyfile = f"{output_dir}/{fname}_PRM_SET.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 self.__fp1[fname] = fd
-                DEBUG.info("Completed {} open".format(pyfile))
+                DEBUG.info(f"Completed {pyfile} open")
 
-                pyfile = "{}/{}_PRM_SAVE.py".format(output_dir, fname)
-                DEBUG.info("Open file: {}".format(pyfile))
+                pyfile = f"{output_dir}/{fname}_PRM_SAVE.py"
+                DEBUG.info(f"Open file: {pyfile}")
                 fd = open(pyfile, "w")
                 self.__fp2[fname] = fd
-                DEBUG.info("Completed {} open".format(pyfile))
+                DEBUG.info(f"Completed {pyfile} open")
 
         else:
-            print("Invalid type {}".format(obj))
+            print(f"Invalid type {obj}")
             sys.exit(-1)
 
         # Open file for writing here...
@@ -233,16 +229,14 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
                 c = CommandBody.CommandBody()
                 # only add the suffix if there is more than one opcode per command
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), obj.get_mnemonic()
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{obj.get_mnemonic()}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = obj.get_mnemonic()
                 else:
-                    fname = "{}_{}".format(instance_obj[0], obj.get_mnemonic())
+                    fname = f"{instance_obj[0]}_{obj.get_mnemonic()}"
                 c.mnemonic = fname
                 try:
                     c.opcode = hex(int(float(obj.get_base_opcode())) + instance_obj[1])
@@ -278,18 +272,16 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
                 c = CommandBody.CommandBody()
 
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
+                    fname = f"{instance_obj[0]}_{self.__stem}"
 
-                c.mnemonic = fname + "_PRM_SET"
+                c.mnemonic = f"{fname}_PRM_SET"
 
                 try:
                     c.opcode = hex(int(float(obj.get_base_setop())) + instance_obj[1])
@@ -321,18 +313,16 @@ class InstanceCommandVisitor(AbstractVisitor.AbstractVisitor):
                 # Set Command
                 c = CommandBody.CommandBody()
                 if instance_obj[3].get_dict_short_name() is not None:
-                    fname = "{}_{}".format(
-                        instance_obj[3].get_dict_short_name(), self.__stem
-                    )
+                    fname = f"{instance_obj[3].get_dict_short_name()}_{self.__stem}"
                 elif (
                     not topology_model.get_prepend_instance_name()
                     and len(instance_obj_list) == 1
                 ):
                     fname = self.__stem
                 else:
-                    fname = "{}_{}".format(instance_obj[0], self.__stem)
+                    fname = f"{instance_obj[0]}_{self.__stem}"
 
-                c.mnemonic = fname + "_PRM_SAVE"
+                c.mnemonic = f"{fname}_PRM_SAVE"
 
                 try:
                     c.opcode = hex(int(float(obj.get_base_saveop())) + instance_obj[1])

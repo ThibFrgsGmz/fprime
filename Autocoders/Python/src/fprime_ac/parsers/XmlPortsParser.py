@@ -63,21 +63,17 @@ class XmlPortsParser:
         self.__modifier = None
         #
         if not os.path.isfile(xml_file):
-            str = "ERROR: Could not find specified XML file %s." % xml_file
+            str = f"ERROR: Could not find specified XML file {xml_file}."
             raise OSError(str)
-        fd = open(xml_file)
-        xml_file = os.path.basename(xml_file)
-        self.__xml_filename = xml_file
-        #
+        with open(xml_file) as fd:
+            xml_file = os.path.basename(xml_file)
+            self.__xml_filename = xml_file
+            #
 
-        xml_parser = etree.XMLParser(remove_comments=True)
-        element_tree = etree.parse(fd, parser=xml_parser)
-        fd.close()  # Close the file, which is only used for the parsing above
-
-        # Validate against schema
-        relax_file_handler = open(ROOTDIR + self.__config.get("schema", "interface"))
-        relax_parsed = etree.parse(relax_file_handler)
-        relax_file_handler.close()
+            xml_parser = etree.XMLParser(remove_comments=True)
+            element_tree = etree.parse(fd, parser=xml_parser)
+        with open(ROOTDIR + self.__config.get("schema", "interface")) as relax_file_handler:
+            relax_parsed = etree.parse(relax_file_handler)
         relax_compiled = etree.RelaxNG(relax_parsed)
 
         # 2/3 conversion
@@ -86,10 +82,10 @@ class XmlPortsParser:
 
         interface = element_tree.getroot()
         if interface.tag != "interface":
-            PRINT.info("%s is not an interface file" % xml_file)
+            PRINT.info(f"{xml_file} is not an interface file")
             sys.exit(-1)
 
-        print("Parsing Interface %s" % interface.attrib["name"])
+        print(f'Parsing Interface {interface.attrib["name"]}')
 
         if "namespace" in interface.attrib:
             namespace_name = interface.attrib["namespace"]
@@ -112,23 +108,14 @@ class XmlPortsParser:
             elif interface_tag.tag == "args":
                 for arg in interface_tag:
                     if arg.tag != "arg":
-                        PRINT.info(
-                            "%s: Invalid tag %s in interface args definition"
-                            % (xml_file, arg.tag)
-                        )
+                        PRINT.info(f"{xml_file}: Invalid tag {arg.tag} in interface args definition")
                         sys.exit(-1)
                     n = arg.attrib["name"]
                     t = arg.attrib["type"]
-                    if "pass_by" in list(arg.attrib.keys()):
-                        p = arg.attrib["pass_by"]
-                    else:
-                        p = None
+                    p = arg.attrib["pass_by"] if "pass_by" in list(arg.attrib.keys()) else None
                     if t in ("string", "buffer"):
-                        if not "size" in list(arg.attrib.keys()):
-                            PRINT.info(
-                                "%s: arg %s string must specify size tag"
-                                % (xml_file, arg.tag)
-                            )
+                        if "size" not in list(arg.attrib.keys()):
+                            PRINT.info(f"{xml_file}: arg {arg.tag} string must specify size tag")
                             sys.exit(-1)
                         else:
                             s = arg.attrib["size"]
@@ -144,10 +131,7 @@ class XmlPortsParser:
                             enum_members = []
                             for mem in arg_tag:
                                 mn = mem.attrib["name"]
-                                if "value" in list(mem.attrib.keys()):
-                                    v = mem.attrib["value"]
-                                else:
-                                    v = None
+                                v = mem.attrib["value"] if "value" in list(mem.attrib.keys()) else None
                                 if "comment" in list(mem.attrib.keys()):
                                     mc = mem.attrib["comment"].strip()
                                 else:
@@ -156,8 +140,7 @@ class XmlPortsParser:
                             arg_obj.set_type(((t, en), enum_members))
                         else:
                             PRINT.info(
-                                "%s: Invalid argument tag %s in port %s argument %s"
-                                % (xml_file, arg_tag.tag, interface_tag.tag, n)
+                                f"{xml_file}: Invalid argument tag {arg_tag.tag} in port {interface_tag.tag} argument {n}"
                             )
                             sys.exit(-1)
 
@@ -176,10 +159,7 @@ class XmlPortsParser:
                         enum_members = []
                         for mem in enum_tag:
                             mn = mem.attrib["name"]
-                            if "value" in list(mem.attrib.keys()):
-                                v = mem.attrib["value"]
-                            else:
-                                v = None
+                            v = mem.attrib["value"] if "value" in list(mem.attrib.keys()) else None
                             if "comment" in list(mem.attrib.keys()):
                                 mc = mem.attrib["comment"].strip()
                             else:
@@ -187,10 +167,7 @@ class XmlPortsParser:
                             enum_members.append((mn, v, mc))
                         t = ((t, en), enum_members)
                     else:
-                        PRINT.info(
-                            "%s: Invalid port return value tag %s"
-                            % (xml_file, enum_tag.tag)
-                        )
+                        PRINT.info(f"{xml_file}: Invalid port return value tag {enum_tag.tag}")
                         sys.exit(-1)
 
                 self.__port.set_return(t, m)

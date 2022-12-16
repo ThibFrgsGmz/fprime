@@ -94,33 +94,31 @@ class PortCppVisitor(AbstractVisitor.AbstractVisitor):
                     isEnum = True
                 else:
                     PRINT.info(
-                        "ERROR: Ill formed enumeration type...(name: %s, type: %s"
-                        % (arg.get_name(), arg.get_type())
+                        f"ERROR: Ill formed enumeration type...(name: {arg.get_name()}, type: {arg.get_type()}"
                     )
                     sys.exit(-1)
             else:
                 t = arg.get_type()
 
             if t == "string":
-                t = arg.get_name() + "String"
+                t = f"{arg.get_name()}String"
             if t == "buffer":
-                t = arg.get_name() + "Buffer"
+                t = f"{arg.get_name()}Buffer"
 
             #
             # Add modifier here - if any...
             if arg.get_modifier() == "pointer":
-                t = t + " *"
+                t = f"{t} *"
             elif arg.get_modifier() == "reference":
-                t = t + " &"
+                t = f"{t} &"
             elif TypesList.isPrimitiveType(t) or isEnum:
-                t = t + " "
+                t = f"{t} "
             else:
-                t = "const " + t + " &"
+                t = f"const {t} &"
 
-            arg_str += "{}{}".format(t, arg.get_name())
+            arg_str += f"{t}{arg.get_name()}"
             arg_str += ", "
-        arg_str = arg_str.strip(", ")
-        return arg_str
+        return arg_str.strip(", ")
 
     def _get_args_string(self, obj):
         """
@@ -130,10 +128,9 @@ class PortCppVisitor(AbstractVisitor.AbstractVisitor):
         args = obj.get_args()
         arg_str = ""
         for arg in args:
-            arg_str += "%s" % arg.get_name()
+            arg_str += f"{arg.get_name()}"
             arg_str += ", "
-        arg_str = arg_str.strip(", ")
-        return arg_str
+        return arg_str.strip(", ")
 
     def _get_args_list(self, obj):
         """
@@ -155,7 +152,7 @@ class PortCppVisitor(AbstractVisitor.AbstractVisitor):
         """
         Wrapper to write tmpl to files desc.
         """
-        DEBUG.debug("PortCppVisitor:%s" % visit_str)
+        DEBUG.debug(f"PortCppVisitor:{visit_str}")
         DEBUG.debug("===================================")
         DEBUG.debug(c)
         self.__fp.writelines(c.__str__())
@@ -181,19 +178,15 @@ class PortCppVisitor(AbstractVisitor.AbstractVisitor):
             if (x[0][-l:] == s[0]) & (x[1] == s[1]):
                 filename = x[0].split(s[0])[0] + self.__config.get("port", "PortCpp")
                 PRINT.info(
-                    "Generating code filename: %s, using default XML filename prefix..."
-                    % filename
+                    f"Generating code filename: {filename}, using default XML filename prefix..."
                 )
             else:
-                msg = (
-                    "XML file naming format not allowed (must be XXXPortAi.xml), Filename: %s"
-                    % xml_file
-                )
+                msg = f"XML file naming format not allowed (must be XXXPortAi.xml), Filename: {xml_file}"
                 PRINT.info(msg)
                 raise ValueError(msg)
 
         # Open file for writing here...
-        DEBUG.info("Open file: %s" % filename)
+        DEBUG.info(f"Open file: {filename}")
         self.__fp = open(filename, "w")
         DEBUG.info("Completed")
 
@@ -333,10 +326,7 @@ class PortCppVisitor(AbstractVisitor.AbstractVisitor):
         c.args_string = self._get_args_string(obj)
         #
         c.ret_flag = obj.get_return()
-        if c.ret_flag is not None:
-            c.ret_flag = True
-        else:
-            c.ret_flag = False
+        c.ret_flag = c.ret_flag is not None
         #
         self._writeTmpl(c, "privateVisit")
 

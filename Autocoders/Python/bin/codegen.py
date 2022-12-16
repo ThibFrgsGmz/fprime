@@ -401,48 +401,48 @@ def generate_topology(the_parsed_topology_xml, xml_filename, opt):
 
         topology_model.set_instance_xml_list(xml_list)
 
-        if opt.xml_topology_dict:
-            topology_dict = etree.Element("dictionary")
-            topology_dict.attrib["topology"] = the_parsed_topology_xml.get_name()
-            topology_dict.attrib["framework_version"] = get_fprime_version().lstrip("v")
-            topology_dict.attrib["project_version"] = get_project_version().lstrip("v")
+    if opt.xml_topology_dict:
+        topology_dict = etree.Element("dictionary")
+        topology_dict.attrib["topology"] = the_parsed_topology_xml.get_name()
+        topology_dict.attrib["framework_version"] = get_fprime_version().lstrip("v")
+        topology_dict.attrib["project_version"] = get_project_version().lstrip("v")
 
-            top_dict_gen = TopDictGenerator.TopDictGenerator(
-                parsed_xml_dict, PRINT.debug
-            )
-            for comp in the_parsed_topology_xml.get_instances():
-                comp_type = comp.get_type()
-                comp_name = comp.get_name()
-                comp_id = int(comp.get_base_id(), 0)
-                PRINT.debug(f"Processing {comp_name} [{comp_type}] ({hex(comp_id)})")
+        top_dict_gen = TopDictGenerator.TopDictGenerator(
+            parsed_xml_dict, PRINT.debug
+        )
+        for comp in the_parsed_topology_xml.get_instances():
+            comp_type = comp.get_type()
+            comp_name = comp.get_name()
+            comp_id = int(comp.get_base_id(), 0)
+            PRINT.debug(f"Processing {comp_name} [{comp_type}] ({hex(comp_id)})")
 
-                top_dict_gen.set_current_comp(comp)
-                top_dict_gen.check_for_enum_xml()
-                top_dict_gen.check_for_serial_xml()
-                top_dict_gen.check_for_commands()
-                top_dict_gen.check_for_channels()
-                top_dict_gen.check_for_events()
-                top_dict_gen.check_for_parameters()
-                top_dict_gen.check_for_arrays()
+            top_dict_gen.set_current_comp(comp)
+            top_dict_gen.check_for_enum_xml()
+            top_dict_gen.check_for_serial_xml()
+            top_dict_gen.check_for_commands()
+            top_dict_gen.check_for_channels()
+            top_dict_gen.check_for_events()
+            top_dict_gen.check_for_parameters()
+            top_dict_gen.check_for_arrays()
 
-            top_dict_gen.remove_duplicate_enums()
+        top_dict_gen.remove_duplicate_enums()
 
-            topology_dict.append(top_dict_gen.get_enum_list())
-            topology_dict.append(top_dict_gen.get_serializable_list())
-            topology_dict.append(top_dict_gen.get_array_list())
-            topology_dict.append(top_dict_gen.get_command_list())
-            topology_dict.append(top_dict_gen.get_event_list())
-            topology_dict.append(top_dict_gen.get_telemetry_list())
-            topology_dict.append(top_dict_gen.get_parameter_list())
+        topology_dict.append(top_dict_gen.get_enum_list())
+        topology_dict.append(top_dict_gen.get_serializable_list())
+        topology_dict.append(top_dict_gen.get_array_list())
+        topology_dict.append(top_dict_gen.get_command_list())
+        topology_dict.append(top_dict_gen.get_event_list())
+        topology_dict.append(top_dict_gen.get_telemetry_list())
+        topology_dict.append(top_dict_gen.get_parameter_list())
 
-            fileName = the_parsed_topology_xml.get_xml_filename().replace(
-                "Ai.xml", "Dictionary.xml"
-            )
-            PRINT.info(f"Generating XML dictionary {fileName}")
-            fd = open(
-                fileName, "wb"
-            )  # Note: binary forces the same encoding of the source files
-            fd.write(etree.tostring(topology_dict, pretty_print=True))
+        fileName = the_parsed_topology_xml.get_xml_filename().replace(
+            "Ai.xml", "Dictionary.xml"
+        )
+        PRINT.info(f"Generating XML dictionary {fileName}")
+        fd = open(
+            fileName, "wb"
+        )  # Note: binary forces the same encoding of the source files
+        fd.write(etree.tostring(topology_dict, pretty_print=True))
 
     initFiles = generator.create("initFiles")
     # startSource = generator.create("startSource")

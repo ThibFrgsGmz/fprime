@@ -47,12 +47,10 @@ class TestMainVisitor(TestVisitorBase.TestVisitorBase):
         self.initTest(obj, c)
 
         if not hasattr(self, "test_cases"):
-            self.test_cases = []
-            self.test_cases.append("toDo")
-
+            self.test_cases = ["toDo"]
         tclist = []
         for case in self.test_cases:
-            if not type(case) is tuple:
+            if type(case) is not tuple:
                 tclist.append((case[0].capitalize() + case[1:], case))
             else:
                 tclist.append((case[0][0].capitalize() + case[0][1:], case[1]))
