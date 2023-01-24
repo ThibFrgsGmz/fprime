@@ -4,7 +4,7 @@ arrow==1.2.2
 attrs==21.4.0
 binaryornot==0.4.4
 Brotli==1.0.9
-certifi==2022.6.15
+certifi==2022.12.7
 chardet==4.0.0
 charset-normalizer==2.0.12
 Cheetah3==3.2.6.post1
