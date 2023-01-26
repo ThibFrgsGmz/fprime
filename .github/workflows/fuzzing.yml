@@ -1,7 +1,8 @@
 name: CIFuzz
 on:
   push:
-    branches: [ ** ]
+    branches:
+      - "**"
     paths:
       - '**.c'
       - '**.cc'
